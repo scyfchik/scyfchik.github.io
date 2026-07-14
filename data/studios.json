@@ -1,0 +1,24 @@
+{
+  "studios": [
+    {
+      "id": "per-games",
+      "name": "Per Games",
+      "groupId": 5664878,
+      "groupUrl": "https://www.roblox.com/communities/5664878/Per-Games#!/about",
+      "roles": {
+        "ru": ["QA Tester", "Support Specialist"],
+        "en": ["QA Tester", "Support Specialist"]
+      }
+    },
+    {
+      "id": "habit-games",
+      "name": "Habit Games!",
+      "groupId": 12860813,
+      "groupUrl": "https://www.roblox.com/communities/12860813/Habit-Games#!/about",
+      "roles": {
+        "ru": ["QA Tester"],
+        "en": ["QA Tester"]
+      }
+    }
+  ]
+}

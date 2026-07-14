@@ -1,0 +1,91 @@
+/* Hero -> About atmospheric bridge. Kept isolated from the other sections. */
+.hero {
+    --hero-parallax-y: 0px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: transparent;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: -3% -3% 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(3, 8, 20, 0.92) 0%, rgba(3, 8, 20, 0.74) 38%, rgba(3, 8, 20, 0.28) 72%, rgba(3, 8, 20, 0.45) 100%),
+        linear-gradient(180deg, rgba(3, 8, 20, 0.05) 0%, rgba(3, 8, 20, 0.46) 64%, rgba(3, 8, 20, 0.96) 100%),
+        url("../hero-bg-harmonized.png") center / cover no-repeat;
+    transform: translate3d(0, var(--hero-parallax-y), 0) scale(1.035);
+    transform-origin: center top;
+    will-change: transform;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 44%, rgba(0, 0, 0, 0.94) 54%, rgba(0, 0, 0, 0.7) 68%, rgba(0, 0, 0, 0.34) 80%, transparent 91%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 44%, rgba(0, 0, 0, 0.94) 54%, rgba(0, 0, 0, 0.7) 68%, rgba(0, 0, 0, 0.34) 80%, transparent 91%, transparent 100%);
+}
+
+.hero::after {
+    content: none;
+}
+
+#about {
+    --about-parallax-y: 0px;
+    z-index: 3;
+    isolation: isolate;
+    margin-top: -56px;
+    padding-top: 176px;
+}
+
+#about::before {
+    content: none;
+}
+
+#about::after {
+    content: none;
+}
+
+#about.reveal {
+    transform: translateY(26px);
+    transition: opacity 1.25s cubic-bezier(0.22, 1, 0.36, 1), transform 1.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#about.reveal.visible {
+    transform: translateY(0);
+}
+
+@media (max-width: 800px) {
+    .hero {
+        background: transparent;
+    }
+
+    .hero::before {
+        display: block !important;
+        inset: -2% -2% 0;
+        background:
+            linear-gradient(180deg, rgba(3, 8, 20, 0.62) 0%, rgba(3, 8, 20, 0.82) 52%, rgba(3, 8, 20, 0.98) 100%),
+            url("../hero-bg-harmonized.png") 62% center / cover no-repeat;
+        transform: scale(1.02);
+        will-change: auto;
+        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 480px), rgba(0, 0, 0, 0.82) calc(100% - 350px), rgba(0, 0, 0, 0.38) calc(100% - 190px), transparent calc(100% - 60px), transparent 100%);
+        mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 480px), rgba(0, 0, 0, 0.82) calc(100% - 350px), rgba(0, 0, 0, 0.38) calc(100% - 190px), transparent calc(100% - 60px), transparent 100%);
+    }
+
+    #about {
+        margin-top: -44px;
+        padding-top: 116px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero::before {
+        transform: translateX(0) scale(1.035);
+        will-change: auto;
+    }
+
+    #about.reveal,
+    #about.reveal.visible {
+        opacity: 1;
+        transform: none;
+    }
+}

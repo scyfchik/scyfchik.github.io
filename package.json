@@ -1,0 +1,8 @@
+{
+    "name": "lunyxzz-portfolio",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "update:roblox-stats": "node scripts/update-roblox-stats.mjs"
+    }
+}

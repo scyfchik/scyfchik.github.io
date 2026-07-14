@@ -1,0 +1,342 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 14px 5%;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  background: rgba(4, 10, 24, 0.72);
+  border-bottom: 1px solid rgba(175, 200, 255, 0.14);
+  backdrop-filter: blur(20px);
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.nav-links a:hover,
+.nav-links a.active-nav {
+  color: var(--text);
+}
+
+.hero {
+  min-height: 100vh;
+  padding: 140px 5% 130px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  background: linear-gradient(90deg, rgba(3, 8, 20, 0.92) 0%, rgba(3, 8, 20, 0.74) 38%, rgba(3, 8, 20, 0.28) 72%, rgba(3, 8, 20, 0.45) 100%), linear-gradient(180deg, rgba(3, 8, 20, 0.05) 0%, rgba(3, 8, 20, 0.46) 64%, rgba(3, 8, 20, 0.96) 100%), url("../hero-bg-harmonized.png") center/cover no-repeat;
+}
+
+.hero-text {
+  width: min(680px, 100%);
+}
+
+.hero h1 {
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: 0.95;
+  margin-bottom: 20px;
+}
+
+.hero h2 {
+  font-size: clamp(20px, 3vw, 28px);
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.buttons,
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 22px;
+  border-radius: 14px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: rgba(16, 38, 79, 0.45);
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #6f8fff, #afc8ff);
+  color: #04111f;
+}
+
+.section {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 90px 0;
+}
+
+.section h2 {
+  font-size: clamp(30px, 4vw, 42px);
+  margin-bottom: 28px;
+}
+
+.cards,
+.project-grid,
+.small-grid,
+.about-grid,
+.experience-grid,
+.contact-grid {
+  display: grid;
+  gap: 22px;
+}
+
+.project-grid,
+.small-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card,
+.experience-card,
+.contact-card {
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  backdrop-filter: blur(14px);
+}
+
+.project-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 18px;
+  margin-bottom: 16px;
+}
+
+.roblox-stats,
+.studios-stats {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.stat-pill,
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(12, 27, 57, 0.65);
+}
+
+.ccu-chart {
+  width: 100%;
+  min-height: 120px;
+  margin-top: 12px;
+}
+
+.dash-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: rgba(8, 19, 41, 0.65);
+  padding: 18px;
+}
+
+.dash-track {
+  display: flex;
+  transition: transform 0.35s ease;
+}
+
+.dash-slide {
+  min-width: 100%;
+  padding: 12px;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .about-grid,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.hero-text {
+    position: relative;
+    z-index: 5;
+    width: min(680px, 100%);
+}
+
+.label {
+    color: var(--primary-2);
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 22px rgba(122, 156, 255, 0.45);
+}
+
+.hero h1 {
+    font-size: clamp(54px, 8vw, 110px);
+    line-height: 0.95;
+    letter-spacing: -4px;
+    margin-bottom: 26px;
+    color: var(--text);
+    text-shadow: 0 0 40px rgba(122, 156, 255, 0.38);
+}
+
+.hero h1 span {
+    background: linear-gradient(135deg, #ffffff, #c8d7ff 30%, #7a9cff 72%, #f5f8ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero h2 {
+    font-size: clamp(22px, 3vw, 31px);
+    margin-bottom: 34px;
+    color: var(--text);
+}
+
+.description {
+    max-width: 650px;
+    font-size: 19px;
+    line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 36px;
+}
+
+.buttons {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 58px;
+    padding: 0 32px;
+    border-radius: 17px;
+    font-weight: 800;
+    border: 1px solid var(--border);
+    transition: 0.25s ease;
+}
+
+.btn.primary {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #6f8fff, #afc8ff);
+    box-shadow: 0 0 35px rgba(122, 156, 255, 0.35);
+    animation: buttonGlow 3.5s ease-in-out infinite alternate;
+}
+
+.btn.primary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+    transform: skewX(-20deg);
+}
+
+.btn.primary:hover::before {
+    animation: btnShine 0.9s ease;
+}
+
+@keyframes btnShine {
+    from { left: -60%; }
+    to { left: 140%; }
+}
+
+@keyframes buttonGlow {
+    from { box-shadow: 0 0 22px rgba(122, 156, 255, 0.25); }
+    to { box-shadow: 0 0 38px rgba(175, 200, 255, 0.48); }
+}
+
+.btn.secondary {
+    background: rgba(16, 38, 79, 0.45);
+    backdrop-filter: blur(14px);
+}
+
+.btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(122, 156, 255, 0.3);
+}
+
+.socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.socials a,
+.socials .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    color: var(--text);
+    background: rgba(13, 30, 65, 0.5);
+    border: 1px solid rgba(175, 200, 255, 0.14);
+    backdrop-filter: blur(14px);
+    transition: 0.25s ease;
+}
+
+.socials a:hover,
+.socials .social-link:hover {
+    background: rgba(122, 156, 255, 0.2);
+}
+
+.about-image {
+    display: none;
+}
+

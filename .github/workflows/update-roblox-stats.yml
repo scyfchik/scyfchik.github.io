@@ -1,0 +1,31 @@
+name: Update Roblox stats
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-roblox-stats:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Update stats file
+        run: node scripts/update-roblox-stats.mjs
+
+      - name: Commit updated stats
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update Roblox stats"
+          file_pattern: data/roblox-stats.json data/studio-stats.json

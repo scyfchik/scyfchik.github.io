@@ -1,0 +1,311 @@
+/* ABOUT */
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.about-text {
+    padding: 36px;
+}
+
+.about-text p {
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.9;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 2;
+}
+
+/* SKILLS */
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.tags span {
+    padding: 14px 18px;
+    border-radius: 999px;
+    background: rgba(13, 30, 65, 0.6);
+    border: 1px solid var(--border);
+    color: var(--text);
+    backdrop-filter: blur(14px);
+    transition: 0.25s ease;
+    cursor: default;
+}
+
+.tags span:hover {
+    transform: translateY(-4px);
+    background: rgba(122, 156, 255, 0.2);
+    box-shadow: 0 0 30px rgba(122, 156, 255, 0.24);
+}
+
+/* PROJECTS */
+
+.cards {
+    display: grid;
+    gap: 24px;
+}
+
+.project-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.small-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+    padding: 20px;
+    min-height: 100%;
+}
+
+.project-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 18px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(175, 200, 255, 0.16);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 2;
+    transition: transform 0.35s ease;
+}
+
+.project-card:hover img {
+    transform: scale(1.03);
+}
+
+.card h3,
+.project-card h3 {
+    color: var(--text);
+    font-size: 22px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.card p,
+.project-card p {
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 2;
+}
+
+.card > span,
+.project-card > span {
+    display: inline-flex;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(122, 156, 255, 0.16);
+    border: 1px solid rgba(175, 200, 255, 0.14);
+    color: var(--text);
+    font-size: 13px;
+    position: relative;
+    z-index: 2;
+}
+
+.subheading {
+    font-size: 28px;
+    margin: 55px 0 24px;
+    color: var(--text);
+}
+
+/* ROBLOX LIVE STATS */
+
+.roblox-stats {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin: 16px 0 10px;
+}
+
+.roblox-stats .stat-pill {
+    min-width: 0;
+    padding: 10px 8px;
+    border-radius: 14px;
+    background: rgba(122, 156, 255, 0.12);
+    border: 1px solid rgba(175, 200, 255, 0.16);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    overflow: hidden;
+}
+
+.roblox-stats .stat-value {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.roblox-stats .stat-label {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stats-updated {
+    position: relative;
+    z-index: 2;
+    margin: 4px 0 14px;
+    color: var(--soft);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* =========================
+   GAME STUDIOS SECTION (FIXED)
+   ========================= */
+
+.studio-grid,
+.studios-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.studio-card,
+.studios-card {
+    padding: 22px;
+}
+
+.studio-stats,
+.studios-stats {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.studio-stats span,
+.studios-stats span {
+    font-weight: 700;
+    opacity: 1;
+}
+
+.role {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgba(122, 156, 255, 0.15);
+    border: 1px solid rgba(175, 200, 255, 0.18);
+    font-size: 12px;
+}
+
+.ccu-chart {
+    margin-top: 12px;
+    width: 100%;
+    height: 120px;
+}
+
+/* EXPERIENCE */
+
+.experience-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.experience-card {
+    padding: 36px;
+}
+
+.experience-card h3,
+.experience-card p,
+.experience-card ul {
+    position: relative;
+    z-index: 2;
+}
+
+.experience-card h3 {
+    font-size: 24px;
+    margin-bottom: 22px;
+}
+
+.experience-card p {
+    color: var(--muted);
+    line-height: 1.85;
+    font-size: 17px;
+    margin-bottom: 22px;
+}
+
+.experience-card ul {
+    padding-left: 20px;
+    color: var(--muted);
+    line-height: 1.9;
+}
+
+/* CONTACT */
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.contact-card {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.contact-card h3,
+.contact-card p {
+    position: relative;
+    z-index: 2;
+}
+
+.contact-card h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.contact-card p {
+    color: var(--muted);
+    word-break: break-word;
+}
+
+/* FOOTER */
+
+.footer {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 42px 0;
+    text-align: center;
+    color: var(--soft);
+    border-top: 1px solid rgba(175, 200, 255, 0.14);
+}
+
