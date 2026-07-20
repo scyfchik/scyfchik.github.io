@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-20T03:31:38.100Z",
+  "updatedAt": "2026-07-20T06:33:27.541Z",
   "games": {
     "75519253084635": {
       "name": "The Apocalypse  ",
@@ -7,12 +7,12 @@
       "universeId": 7009714292,
       "rootPlaceId": 75519253084635,
       "url": "https://www.roblox.com/games/75519253084635/The-Apocalypse",
-      "playing": 1133,
-      "visits": 81667299,
+      "playing": 1184,
+      "visits": 81681839,
       "image": "https://tr.rbxcdn.com/180DAY-7ea9ebd1ead5892b00dbf21b8c719892/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "96168869671905": {
@@ -21,12 +21,12 @@
       "universeId": 9472441390,
       "rootPlaceId": 96168869671905,
       "url": "https://www.roblox.com/games/96168869671905/ROB-IT",
-      "playing": 3477,
-      "visits": 217932044,
+      "playing": 3255,
+      "visits": 218019875,
       "image": "https://tr.rbxcdn.com/180DAY-cc1f9a8cd21066793582384fe834e9ec/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "11351530953": {
@@ -39,8 +39,8 @@
       "visits": 12858,
       "image": "https://tr.rbxcdn.com/180DAY-cba1ad4006b25529cb86e5fdb24e0a31/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "113217312262185": {
@@ -49,12 +49,12 @@
       "universeId": 8773050457,
       "rootPlaceId": 113217312262185,
       "url": "https://www.roblox.com/games/113217312262185/SCP-retroBreach",
-      "playing": 1005,
-      "visits": 29584971,
+      "playing": 819,
+      "visits": 29595506,
       "image": "https://tr.rbxcdn.com/180DAY-4dcb071f98862d495a7d00574219dcfb/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "90738171169572": {
@@ -63,12 +63,12 @@
       "universeId": 8459032065,
       "rootPlaceId": 90738171169572,
       "url": "https://www.roblox.com/games/90738171169572/Anime-Tactical-Simulator",
-      "playing": 2,
-      "visits": 20603131,
+      "playing": 0,
+      "visits": 20603150,
       "image": "https://tr.rbxcdn.com/180DAY-979fad85f8a3c3eb7d2e009e29af0c76/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "132352755769957": {
@@ -77,12 +77,12 @@
       "universeId": 6749060816,
       "rootPlaceId": 132352755769957,
       "url": "https://www.roblox.com/games/132352755769957/Asylum-Life",
-      "playing": 6453,
-      "visits": 242240842,
+      "playing": 5922,
+      "visits": 242304452,
       "image": "https://tr.rbxcdn.com/180DAY-5f36f2f391fa0903bc7f1ad1368d8aac/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "137826330724902": {
@@ -91,12 +91,12 @@
       "universeId": 8539298853,
       "rootPlaceId": 137826330724902,
       "url": "https://www.roblox.com/games/137826330724902/Scary-Shawarma-Kiosk-the-ANOMALY",
-      "playing": 7214,
-      "visits": 1236192865,
+      "playing": 5047,
+      "visits": 1236276185,
       "image": "https://tr.rbxcdn.com/180DAY-2fc0830a209194be781df4211a84f824/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "114234929420007": {
@@ -105,12 +105,12 @@
       "universeId": 7633926880,
       "rootPlaceId": 114234929420007,
       "url": "https://www.roblox.com/games/114234929420007/BloxStrike",
-      "playing": 4652,
-      "visits": 209516595,
+      "playing": 6579,
+      "visits": 209595731,
       "image": "https://tr.rbxcdn.com/180DAY-032024003b99d0c7b21a3e246694c47f/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     },
     "14044547200": {
@@ -119,12 +119,12 @@
       "universeId": 4864117649,
       "rootPlaceId": 14044547200,
       "url": "https://www.roblox.com/games/14044547200/untitled-tag-game",
-      "playing": 1436,
-      "visits": 418767839,
+      "playing": 1035,
+      "visits": 418791231,
       "image": "https://tr.rbxcdn.com/180DAY-8e899fcb1a60473e4853d39099c82da6/512/512/Image/Png/noFilter",
       "status": "ok",
-      "activeUpdatedAt": "2026-07-20T03:31:38.100Z",
-      "visitsUpdatedAt": "2026-07-20T03:31:38.100Z",
+      "activeUpdatedAt": "2026-07-20T06:33:27.541Z",
+      "visitsUpdatedAt": "2026-07-20T06:33:27.541Z",
       "source": "Roblox Games API"
     }
   }
