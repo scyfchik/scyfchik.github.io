@@ -6,6 +6,26 @@ import { experienceItems } from "../data/experience.js";
 import { clearElement, createElement, localize } from "../utils/dom.js";
 import { animateNumber, formatDate } from "../utils/formatters.js";
 
+const rolePriority = Object.freeze({
+  "qa lead": 1,
+  "qa tester": 2,
+  "game tester": 2,
+});
+
+function getRolePriority(role) {
+  const normalizedRole = String(role || "").trim().toLowerCase();
+  if (rolePriority[normalizedRole]) return rolePriority[normalizedRole];
+  if (normalizedRole.includes("qa") || normalizedRole.includes("quality assurance") || normalizedRole.includes("tester")) return 2;
+  return 3;
+}
+
+export function getSortedQAProjects() {
+  return qaProjects
+    .map((project, index) => ({ project, index }))
+    .sort((left, right) => getRolePriority(left.project.role) - getRolePriority(right.project.role) || left.index - right.index)
+    .map(({ project }) => project);
+}
+
 function renderAbout(language) {
   const root = document.getElementById("aboutBlocks");
   if (!root) return;
@@ -74,7 +94,7 @@ function renderQA(language) {
   const root = document.getElementById("qaGrid");
   if (!root) return;
   clearElement(root);
-  for (const project of qaProjects) {
+  for (const project of getSortedQAProjects()) {
     const card = createElement("a", {
       className: "card project-card qa-card",
       attrs: { href: project.url, target: "_blank", rel: "noopener noreferrer" },
