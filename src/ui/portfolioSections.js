@@ -1,7 +1,7 @@
 import { profile } from "../data/profile.js";
 import { skillGroups } from "../data/skills.js";
-import { developmentProjects } from "../data/developmentProjects.js";
 import { qaProjects } from "../data/qaProjects.js";
+import { communityProjects } from "../data/communityProjects.js";
 import { experienceItems } from "../data/experience.js";
 import { clearElement, createElement, localize } from "../utils/dom.js";
 import { animateNumber, formatDate } from "../utils/formatters.js";
@@ -55,29 +55,6 @@ function createProjectPlaceholder(project) {
   ]);
 }
 
-function renderDevelopment(language) {
-  const root = document.getElementById("developmentGrid");
-  if (!root) return;
-  clearElement(root);
-  for (const project of developmentProjects) {
-    const tag = project.url ? "a" : "article";
-    const attrs = project.url ? { href: project.url, target: "_blank", rel: "noopener noreferrer" } : {};
-    const card = createElement(tag, { className: "card project-card development-card", attrs });
-    const heading = createElement("div", { className: "project-heading" }, [
-      createElement("h3", { text: project.title }),
-      createElement("span", { text: project.subtitle, attrs: project.url ? { "aria-hidden": "true" } : {} }),
-    ]);
-    card.append(
-      createProjectPlaceholder(project),
-      heading,
-      createElement("p", { text: localize(project.description, language) }),
-      createElement("div", { className: "project-tech", text: project.tech }),
-      createElement("span", { text: localize(project.status, language) }),
-    );
-    root.append(card);
-  }
-}
-
 function createStats(language) {
   const stats = createElement("div", { className: "roblox-stats", attrs: { "aria-label": "Roblox statistics" } });
   const entries = [{ key: "playing", ru: "Онлайн", en: "Active" }, { key: "visits", ru: "Визиты", en: "Visits" }];
@@ -118,6 +95,45 @@ function renderQA(language) {
   }
 }
 
+function getTrackedProjects() {
+  return [...qaProjects, ...communityProjects];
+}
+
+function renderCommunity(language) {
+  const root = document.getElementById("communityGrid");
+  if (!root) return;
+  clearElement(root);
+
+  for (const project of communityProjects) {
+    const tag = project.url ? "a" : "article";
+    const attrs = project.url ? { href: project.url, target: "_blank", rel: "noopener noreferrer" } : {};
+    const card = createElement(tag, {
+      className: "card project-card qa-card community-card",
+      attrs,
+      dataset: project.placeId ? { placeId: project.placeId } : {},
+    });
+    if (project.image) card.append(createElement("img", { attrs: { src: project.image, alt: project.alt || project.title, loading: "lazy" } }));
+    else if (project.mark && project.kind) card.append(createProjectPlaceholder(project));
+
+    card.append(
+      createElement("div", { className: "project-heading" }, [
+        createElement("h3", { text: project.title }),
+        createElement("span", { text: project.subtitle || (project.url ? "в†—" : ""), attrs: project.url ? { "aria-hidden": "true" } : {} }),
+      ]),
+      createElement("p", { className: "project-role", text: localize(project.role, language) }),
+      createElement("p", { className: "project-description", text: localize(project.description, language) }),
+      createElement("div", { className: "testing-types", text: localize(project.category || project.testingTypes, language) }),
+    );
+    if (project.placeId) {
+      card.append(createStats(language), createElement("div", { className: "stats-updated", text: language === "en" ? "Loading stats..." : "Статистика загружается..." }));
+    } else {
+      card.append(createElement("div", { className: "stats-updated stats-unavailable", text: language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна" }));
+    }
+    card.append(createElement("span", { text: localize(project.status, language) }));
+    root.append(card);
+  }
+}
+
 function renderExperience(language) {
   const root = document.getElementById("experienceGrid");
   if (!root) return;
@@ -135,13 +151,13 @@ function renderExperience(language) {
 export function renderPortfolioSections(language) {
   renderAbout(language);
   renderSkills();
-  renderDevelopment(language);
   renderQA(language);
+  renderCommunity(language);
   renderExperience(language);
 }
 
 export function updateQAStats(stats, language, unavailable = false) {
-  for (const project of qaProjects.filter((item) => item.placeId)) {
+  for (const project of getTrackedProjects().filter((item) => item.placeId)) {
     const card = document.querySelector(`.qa-card[data-place-id="${project.placeId}"]`);
     if (!card) continue;
     const game = stats?.games?.[project.placeId];
@@ -154,6 +170,36 @@ export function updateQAStats(stats, language, unavailable = false) {
     if (!project.image && game.image && !card.querySelector("img")) {
       const placeholder = card.querySelector(".project-placeholder");
       const image = createElement("img", { attrs: { src: game.image, alt: project.alt || project.title, loading: "lazy" } });
+      image.addEventListener("error", () => {
+        image.remove();
+        if (placeholder && !placeholder.isConnected) card.prepend(placeholder);
+      }, { once: true });
+      placeholder?.remove();
+      card.prepend(image);
+    }
+    animateNumber(card.querySelector('[data-stat="playing"]'), game.playing, language);
+    animateNumber(card.querySelector('[data-stat="visits"]'), game.visits, language);
+    if (game.status === "unavailable") {
+      if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
+      continue;
+    }
+    const time = formatDate(game.activeUpdatedAt, language, { hour: "2-digit", minute: "2-digit" });
+    if (status) status.textContent = `${language === "en" ? "Updated" : "Обновлено"}: ${time}`;
+    card.classList.add("loaded");
+  }
+
+  for (const card of document.querySelectorAll(".community-card[data-place-id]")) {
+    const placeId = card.dataset.placeId;
+    const game = stats?.games?.[placeId];
+    const status = card.querySelector(".stats-updated");
+    if (unavailable || !game) {
+      card.querySelectorAll(".stat-value").forEach((element) => { element.textContent = "—"; });
+      if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
+      continue;
+    }
+    if (!card.querySelector("img") && game.image) {
+      const placeholder = card.querySelector(".project-placeholder");
+      const image = createElement("img", { attrs: { src: game.image, alt: game.name || "Roblox project", loading: "lazy" } });
       image.addEventListener("error", () => {
         image.remove();
         if (placeholder && !placeholder.isConnected) card.prepend(placeholder);

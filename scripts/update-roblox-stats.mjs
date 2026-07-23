@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import { qaProjects } from "../src/data/qaProjects.js";
+import { communityProjects } from "../src/data/communityProjects.js";
 
 const PATHS = Object.freeze({
   qaStats: "data/roblox-stats.json",
@@ -126,7 +127,7 @@ async function getThumbnails(universeIds) {
 
 async function updateQaStats(now) {
   const previous = await readJson(PATHS.qaStats, { updatedAt: null, games: {} });
-  const projects = qaProjects.filter((project) => /^\d+$/.test(String(project.placeId || "")));
+  const projects = [...qaProjects, ...communityProjects].filter((project) => /^\d+$/.test(String(project.placeId || "")));
   const resolved = new Map();
   const resolutionFailures = new Set();
 

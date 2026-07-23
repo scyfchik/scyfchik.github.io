@@ -9,7 +9,7 @@ export const profile = Object.freeze({
     en: "I study cybersecurity, build systems for Roblox, and test game projects. My interests include SOC, DFIR, Blue Team, game security, and player experience quality.",
   },
   actions: [
-    { href: "#development", className: "btn primary", label: { ru: "Посмотреть работы", en: "View Work" } },
+    { href: "#qa", className: "btn primary", label: { ru: "Посмотреть работы", en: "View Work" } },
     { href: "#contacts", className: "btn secondary", label: { ru: "Связаться", en: "Contact" } },
   ],
   about: [
