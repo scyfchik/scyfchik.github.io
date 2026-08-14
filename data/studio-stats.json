@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-14T20:39:24.629Z",
+  "updatedAt": "2026-08-14T21:00:07.161Z",
   "studios": {
     "per-games": {
       "groupId": 5664878,
       "status": "ok",
       "gameCount": 4,
-      "totalPlaying": 801,
-      "totalVisits": 117826461,
-      "updatedAt": "2026-08-14T20:39:24.629Z",
+      "totalPlaying": 828,
+      "totalVisits": 117827593,
+      "updatedAt": "2026-08-14T21:00:07.161Z",
       "pagesFetched": 1,
       "games": [
         {
@@ -16,8 +16,8 @@
           "name": "Zombie Defense",
           "description": "🛠️ Build a base and defend your flag from waves of zombies that are trying to destroy your base! Buy chests, complete missions, upgrade your base, and much more!\n\n👍 Like the game for more big updates!\n⭐ New code at 45K Likes!\n\n🎁 Play with a friend and get a 10% gold bonus!\n🎁 Join our group to get 30 wooden blocks and 1 cannon!\n\n🎮 Available on: computer, mobile, tablet, console\n\n💥 Update Log: https://devforum.roblox.com/t/zombie-defense-updates\n\nDeveloper: Per Games, icons - flaticon, music - roblox marketplace\nPublisher: Per Games\nVersion 2.27.0",
           "url": "https://www.roblox.com/games/4711958375",
-          "playing": 45,
-          "visits": 27326681,
+          "playing": 46,
+          "visits": 27326805,
           "maxPlayers": 8,
           "created": "2020-02-21T16:25:19.077Z",
           "updated": "2026-08-09T16:53:07.474Z",
@@ -44,7 +44,7 @@
           "name": " The Hallway",
           "description": "👻Build your base from the furniture around you and survive the night in the \"infinite\" Hallway! Be careful, they're watching you!\n\n💾CREATING A PRIVATE SERVER ALLOWS YOU TO CREATE SAVING SLOTS AND SAVE EVERYTHING YOU AND YOUR FRIENDS BUILD!\n\nCtrl - crouch\nShift - sprint\nV - inspect \n\n⚒ The game is currently in BETA testing. We apologize for any bugs or issues!\n\n🎁 Join our group to get 15% more coins!\n🎁 Buy Roblox premium to get 2x coins!\n\n🎮 Available on: computer, mobile, tablet\n\n💥 Update Log: https://devforum.roblox.com/t/the-hallway-updates\n\nDeveloper: Per Games, icons - flaticon, music - roblox marketplace\nPublisher: Per Games\nVersion 2.3.1",
           "url": "https://www.roblox.com/games/8632989443",
-          "playing": 0,
+          "playing": 1,
           "visits": 2774022,
           "maxPlayers": 12,
           "created": "2022-01-24T19:47:53.97Z",
@@ -58,8 +58,8 @@
           "name": "The Apocalypse  ",
           "description": "🔥Open-world zombie survival game with building & turrets!\n🧟Mine, craft, fight, and build a base that will be attacked by zombies! Buy kits to start with better stuff and try surviving the longest possible!\n\n🛠️ The game is currently in public BETA testing, please report any issues you encounter to our community forums!\n\n👍 Like the game for in-game rewards!\n\n🎁 Join our group to get 15% credit bonus!\n🎁 Come back for your daily rewards!\n\n🎮 Available on: computer, mobile, tablet, console\n\n💥 Update Log: will be added\n\nDeveloper: Per Games, icons - flaticon, music - roblox marketplace\nPublisher: Per Games\nVersion 1.12.1",
           "url": "https://www.roblox.com/games/75519253084635",
-          "playing": 756,
-          "visits": 84653641,
+          "playing": 781,
+          "visits": 84654649,
           "maxPlayers": 60,
           "created": "2024-12-31T10:56:51.93Z",
           "updated": "2026-08-11T19:27:59.536Z",
@@ -68,11 +68,6 @@
         }
       ],
       "history": [
-        {
-          "timestamp": "2026-08-12T08:02:42.699Z",
-          "playing": 781,
-          "visits": 117630646
-        },
         {
           "timestamp": "2026-08-12T09:18:36.298Z",
           "playing": 813,
@@ -367,12 +362,17 @@
           "timestamp": "2026-08-14T20:39:24.629Z",
           "playing": 801,
           "visits": 117826461
+        },
+        {
+          "timestamp": "2026-08-14T21:00:07.161Z",
+          "playing": 828,
+          "visits": 117827593
         }
       ]
     },
     "habit-games": {
       "groupId": 12860813,
-      "status": "partial",
+      "status": "unavailable",
       "gameCount": 88,
       "totalPlaying": 4317,
       "totalVisits": 567574055,
@@ -1913,7 +1913,8 @@
           "playing": 4317,
           "visits": 567574055
         }
-      ]
+      ],
+      "error": "Group 12860813 games page 1: request timeout"
     }
   }
 }
