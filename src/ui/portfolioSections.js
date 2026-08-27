@@ -19,11 +19,31 @@ function getRolePriority(role) {
   return 3;
 }
 
-export function getSortedQAProjects() {
+function getProjectCCU(project, stats) {
+  const game = stats?.games?.[project.placeId];
+  if (!game) return 0;
+  return Number(game.playing) || 0;
+}
+
+export function getSortedQAProjects(stats = null) {
   return qaProjects
     .map((project, index) => ({ project, index }))
-    .sort((left, right) => getRolePriority(left.project.role) - getRolePriority(right.project.role) || left.index - right.index)
+    .sort((left, right) => (
+      getRolePriority(left.project.role) - getRolePriority(right.project.role)
+      || getProjectCCU(right.project, stats) - getProjectCCU(left.project, stats)
+      || left.index - right.index
+    ))
     .map(({ project }) => project);
+}
+
+function sortQACards(stats) {
+  const root = document.getElementById("qaGrid");
+  if (!root) return;
+  const cards = new Map([...root.querySelectorAll(".qa-card[data-place-id]")].map((card) => [card.dataset.placeId, card]));
+  for (const project of getSortedQAProjects(stats)) {
+    const card = cards.get(String(project.placeId));
+    if (card) root.append(card);
+  }
 }
 
 function renderAbout(language) {
@@ -167,15 +187,19 @@ export function updateQAStats(stats, language, unavailable = false) {
       if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
       continue;
     }
-    if (!project.image && game.image && !card.querySelector("img")) {
+    if (game.image) {
       const placeholder = card.querySelector(".project-placeholder");
-      const image = createElement("img", { attrs: { src: game.image, alt: project.alt || project.title, loading: "lazy" } });
-      image.addEventListener("error", () => {
-        image.remove();
-        if (placeholder && !placeholder.isConnected) card.prepend(placeholder);
-      }, { once: true });
-      placeholder?.remove();
-      card.prepend(image);
+      let image = card.querySelector("img");
+      if (!image) {
+        image = createElement("img", { attrs: { alt: project.alt || project.title, loading: "lazy" } });
+        image.addEventListener("error", () => {
+          image.remove();
+          if (placeholder && !placeholder.isConnected) card.prepend(placeholder);
+        });
+        placeholder?.remove();
+        card.prepend(image);
+      }
+      if (image.src !== game.image) image.src = game.image;
     }
     animateNumber(card.querySelector('[data-stat="playing"]'), game.playing, language);
     animateNumber(card.querySelector('[data-stat="visits"]'), game.visits, language);
@@ -187,6 +211,8 @@ export function updateQAStats(stats, language, unavailable = false) {
     if (status) status.textContent = `${language === "en" ? "Updated" : "Обновлено"}: ${time}`;
     card.classList.add("loaded");
   }
+
+  sortQACards(unavailable ? null : stats);
 
   for (const card of document.querySelectorAll(".community-card[data-place-id]")) {
     const placeId = card.dataset.placeId;
