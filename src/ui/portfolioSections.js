@@ -6,31 +6,17 @@ import { experienceItems } from "../data/experience.js";
 import { clearElement, createElement, localize } from "../utils/dom.js";
 import { animateNumber, formatDate } from "../utils/formatters.js";
 
-const rolePriority = Object.freeze({
-  "qa lead": 1,
-  "qa tester": 2,
-  "game tester": 2,
-});
-
-function getRolePriority(role) {
-  const normalizedRole = String(role || "").trim().toLowerCase();
-  if (rolePriority[normalizedRole]) return rolePriority[normalizedRole];
-  if (normalizedRole.includes("qa") || normalizedRole.includes("quality assurance") || normalizedRole.includes("tester")) return 2;
-  return 3;
-}
-
-function getProjectCCU(project, stats) {
+function getProjectVisits(project, stats) {
   const game = stats?.games?.[project.placeId];
   if (!game) return 0;
-  return Number(game.playing) || 0;
+  return Number(game.visits) || 0;
 }
 
 export function getSortedQAProjects(stats = null) {
   return qaProjects
     .map((project, index) => ({ project, index }))
     .sort((left, right) => (
-      getRolePriority(left.project.role) - getRolePriority(right.project.role)
-      || getProjectCCU(right.project, stats) - getProjectCCU(left.project, stats)
+      getProjectVisits(right.project, stats) - getProjectVisits(left.project, stats)
       || left.index - right.index
     ))
     .map(({ project }) => project);
@@ -40,10 +26,10 @@ function sortQACards(stats) {
   const root = document.getElementById("qaGrid");
   if (!root) return;
   const cards = new Map([...root.querySelectorAll(".qa-card[data-place-id]")].map((card) => [card.dataset.placeId, card]));
-  for (const project of getSortedQAProjects(stats)) {
-    const card = cards.get(String(project.placeId));
-    if (card) root.append(card);
-  }
+  const sortedCards = getSortedQAProjects(stats).map((project) => cards.get(String(project.placeId))).filter(Boolean);
+  const currentCards = [...root.querySelectorAll(".qa-card[data-place-id]")];
+  if (sortedCards.length === currentCards.length && sortedCards.every((card, index) => card === currentCards[index])) return;
+  root.append(...sortedCards);
 }
 
 function renderAbout(language) {
@@ -115,10 +101,6 @@ function renderQA(language) {
   }
 }
 
-function getTrackedProjects() {
-  return [...qaProjects, ...communityProjects];
-}
-
 function renderCommunity(language) {
   const root = document.getElementById("communityGrid");
   if (!root) return;
@@ -177,7 +159,8 @@ export function renderPortfolioSections(language) {
 }
 
 export function updateQAStats(stats, language, unavailable = false) {
-  for (const project of getTrackedProjects().filter((item) => item.placeId)) {
+  for (const project of qaProjects) {
+    if (!project.placeId) continue;
     const card = document.querySelector(`.qa-card[data-place-id="${project.placeId}"]`);
     if (!card) continue;
     const game = stats?.games?.[project.placeId];
