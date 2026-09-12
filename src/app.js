@@ -7,10 +7,8 @@ import { renderPortfolioSections, updateQAStats } from "./ui/portfolioSections.j
 import { initializeLanguage } from "./ui/language.js";
 import { initializeNavigation } from "./ui/navigation.js";
 import { renderStudios, updateStudiosLanguage, showStudiosUnavailable } from "./ui/studios.js";
-import { initializeDashboard, renderDashboardSlides, updateDashboardLanguage, updateDashboardSummary, cleanupDashboard } from "./ui/dashboard.js";
 import { renderContacts, initializeContact, cleanupContact } from "./ui/contact.js";
 import { initializeAnimations, cleanupAnimations } from "./ui/animations.js";
-import { destroyAllCharts } from "./ui/charts.js";
 
 let refreshTimer;
 
@@ -25,7 +23,6 @@ function rerenderLocalizedContent(language) {
   renderStaticContent(language);
   updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
   updateStudiosLanguage(language);
-  updateDashboardLanguage(language);
 }
 
 async function loadData() {
@@ -39,10 +36,8 @@ async function loadData() {
 
   const language = state.currentLanguage;
   updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
-  updateDashboardSummary(state.robloxStats, language, Boolean(state.errors.robloxStats));
   renderStudios(state.studios, state.robloxStats, language);
   if (state.errors.studios) showStudiosUnavailable(language);
-  renderDashboardSlides(state.studios, language);
 }
 
 function startRefreshTimer() {
@@ -58,17 +53,14 @@ function startRefreshTimer() {
 function cleanup() {
   window.clearInterval(refreshTimer);
   refreshTimer = undefined;
-  cleanupDashboard();
   cleanupContact();
   cleanupAnimations();
-  destroyAllCharts();
 }
 
 async function bootstrap() {
   const language = initializeLanguage(rerenderLocalizedContent);
   initializeNavigation();
   renderStaticContent(language);
-  initializeDashboard();
   initializeContact();
   initializeAnimations();
   await loadData();
@@ -79,7 +71,6 @@ async function bootstrap() {
 
 bootstrap().catch((error) => {
   const language = getState().currentLanguage;
-  updateDashboardSummary(null, language, true);
   updateQAStats(null, language, true);
   showStudiosUnavailable(language);
   console.error("Portfolio initialization failed:", error);

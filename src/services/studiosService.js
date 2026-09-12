@@ -64,6 +64,7 @@ export async function fetchStudios() {
         groupId: Number(studio.groupId) || null,
         groupUrl: typeof studio.groupUrl === "string" ? studio.groupUrl : null,
         roles,
+        contribution: studio.contribution ?? { ru: "", en: "" },
         status: ["ok", "partial", "unavailable"].includes(stats.status) ? stats.status : "unavailable",
         gameCount: Number(stats.gameCount) || games.length,
         totalPlaying: Number(stats.totalPlaying) || 0,

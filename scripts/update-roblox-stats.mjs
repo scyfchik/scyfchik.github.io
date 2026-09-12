@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import { qaProjects } from "../src/data/qaProjects.js";
+import { contributionProjects } from "../src/data/contributionProjects.js";
 import { communityProjects } from "../src/data/communityProjects.js";
 
 const PATHS = Object.freeze({
@@ -128,7 +129,7 @@ async function getThumbnails(universeIds) {
 async function updateQaStats(now) {
   const previous = await readJson(PATHS.qaStats, { updatedAt: null, games: {} });
   const projects = [...new Map(
-    [...qaProjects, ...communityProjects]
+    [...qaProjects, ...communityProjects, ...contributionProjects]
       .filter((project) => /^\d+$/.test(String(project.placeId || "")))
       .map((project) => [String(project.placeId), project]),
   ).values()];

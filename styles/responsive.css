@@ -173,6 +173,17 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--primary-2); out
 .skill-group .tags span { padding: 9px 13px; font-size: 13px; }
 
 .qa-card { display: flex; flex-direction: column; }
+.qa-card, .studios-card { min-width: 0; overflow-wrap: anywhere; }
+.studio-heading { flex-wrap: wrap; }
+.studio-contribution { line-height: 1.7; }
+#contributionGrid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); max-width: 580px; }
+.contribution-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.contribution-stats .stat-value { font-size: 15px; overflow-wrap: normal; }
+.contribution-card > .studio-group-link { align-self: flex-start; margin-top: 16px; }
+@media (min-width: 801px) and (max-width: 1200px) {
+    .navbar { flex-wrap: wrap; gap: 14px; }
+    .nav-links { flex-wrap: wrap; }
+}
 .project-placeholder {
     width: 100%;
     height: 170px;

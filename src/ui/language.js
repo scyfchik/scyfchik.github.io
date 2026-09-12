@@ -27,6 +27,11 @@ export function setLanguage(language, { persist = true, notify = true } = {}) {
   document.getElementById("ruBtn")?.classList.toggle("active", nextLanguage === "ru");
   document.getElementById("enBtn")?.classList.toggle("active", nextLanguage === "en");
   applyStaticTranslations(nextLanguage);
+  const menu = document.querySelector(".menu-toggle");
+  if (menu) {
+    const open = menu.getAttribute("aria-expanded") === "true";
+    menu.setAttribute("aria-label", nextLanguage === "en" ? (open ? "Close menu" : "Open menu") : (open ? "Закрыть меню" : "Открыть меню"));
+  }
   if (persist) writeStorage(CONFIG.language.storageKey, nextLanguage);
   if (notify) changeHandler(nextLanguage);
 }

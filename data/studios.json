@@ -6,8 +6,18 @@
       "groupId": 5664878,
       "groupUrl": "https://www.roblox.com/communities/5664878/Per-Games#!/about",
       "roles": {
-        "ru": ["QA Tester", "Support Specialist"],
-        "en": ["QA Tester", "Support Specialist"]
+        "ru": [
+          "QA Tester",
+          "Support Specialist"
+        ],
+        "en": [
+          "QA Tester",
+          "Support Specialist"
+        ]
+      },
+      "contribution": {
+        "ru": "QA-тестирование и поддержка: проверка игрового опыта и работа с обратной связью пользователей.",
+        "en": "QA testing and support: reviewing the gameplay experience and working with player feedback."
       }
     },
     {
@@ -16,8 +26,16 @@
       "groupId": 12860813,
       "groupUrl": "https://www.roblox.com/communities/12860813/Habit-Games#!/about",
       "roles": {
-        "ru": ["QA Tester"],
-        "en": ["QA Tester"]
+        "ru": [
+          "QA Tester"
+        ],
+        "en": [
+          "QA Tester"
+        ]
+      },
+      "contribution": {
+        "ru": "QA-тестирование: проверка игровых сценариев, описание найденных проблем и повторная проверка исправлений.",
+        "en": "QA testing: checking gameplay scenarios, documenting issues and retesting fixes."
       }
     }
   ]

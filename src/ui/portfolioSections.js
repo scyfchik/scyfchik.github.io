@@ -1,6 +1,7 @@
 import { profile } from "../data/profile.js";
 import { skillGroups } from "../data/skills.js";
 import { qaProjects } from "../data/qaProjects.js";
+import { contributionProjects } from "../data/contributionProjects.js";
 import { communityProjects } from "../data/communityProjects.js";
 import { experienceItems } from "../data/experience.js";
 import { clearElement, createElement, localize } from "../utils/dom.js";
@@ -101,16 +102,17 @@ function renderQA(language) {
   }
 }
 
-function renderCommunity(language) {
-  const root = document.getElementById("communityGrid");
+function renderCommunity(language, projects = communityProjects, rootId = "communityGrid") {
+  const root = document.getElementById(rootId);
   if (!root) return;
   clearElement(root);
 
-  for (const project of communityProjects) {
-    const tag = project.url ? "a" : "article";
-    const attrs = project.url ? { href: project.url, target: "_blank", rel: "noopener noreferrer" } : {};
+  for (const project of projects) {
+    const isContribution = rootId === "contributionGrid";
+    const tag = project.url && !isContribution ? "a" : "article";
+    const attrs = tag === "a" ? { href: project.url, target: "_blank", rel: "noopener noreferrer" } : {};
     const card = createElement(tag, {
-      className: "card project-card qa-card community-card",
+      className: `card project-card qa-card community-card${isContribution ? " studios-card contribution-card" : ""}`,
       attrs,
       dataset: project.placeId ? { placeId: project.placeId } : {},
     });
@@ -120,18 +122,28 @@ function renderCommunity(language) {
     card.append(
       createElement("div", { className: "project-heading" }, [
         createElement("h3", { text: project.title }),
-        createElement("span", { text: project.subtitle || (project.url ? "в†—" : ""), attrs: project.url ? { "aria-hidden": "true" } : {} }),
+        createElement("span", { text: project.subtitle || (project.url && !isContribution ? "↗" : ""), attrs: project.url ? { "aria-hidden": "true" } : {} }),
       ]),
       createElement("p", { className: "project-role", text: localize(project.role, language) }),
       createElement("p", { className: "project-description", text: localize(project.description, language) }),
       createElement("div", { className: "testing-types", text: localize(project.category || project.testingTypes, language) }),
     );
-    if (project.placeId) {
+    if (isContribution) {
+      card.append(
+        createElement("p", { className: "stats-updated", text: `${project.platform} · ${project.experienceCategory}` }),
+        createStats(language),
+        createElement("div", { className: "stats-updated contribution-source", text: language === "en" ? "Roblox API snapshot unavailable" : "Снимок Roblox API недоступен" }),
+      );
+    } else if (project.placeId) {
       card.append(createStats(language), createElement("div", { className: "stats-updated", text: language === "en" ? "Loading stats..." : "Статистика загружается..." }));
     } else {
       card.append(createElement("div", { className: "stats-updated stats-unavailable", text: language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна" }));
     }
-    card.append(createElement("span", { text: localize(project.status, language) }));
+    card.append(createElement(isContribution ? "a" : "span", {
+      className: isContribution ? "studio-group-link" : "",
+      text: localize(project.status, language),
+      attrs: isContribution ? { href: project.url, target: "_blank", rel: "noopener noreferrer" } : {},
+    }));
     root.append(card);
   }
 }
@@ -155,6 +167,7 @@ export function renderPortfolioSections(language) {
   renderSkills();
   renderQA(language);
   renderCommunity(language);
+  renderCommunity(language, contributionProjects, "contributionGrid");
   renderExperience(language);
 }
 
@@ -195,14 +208,37 @@ export function updateQAStats(stats, language, unavailable = false) {
     card.classList.add("loaded");
   }
 
-  sortQACards(unavailable ? null : stats);
+  sortQACards(stats);
 
   for (const card of document.querySelectorAll(".community-card[data-place-id]")) {
     const placeId = card.dataset.placeId;
     const game = stats?.games?.[placeId];
-    const status = card.querySelector(".stats-updated");
+    const status = card.querySelector(".contribution-source") || card.querySelector(".stats-updated");
+    if (card.classList.contains("contribution-card")) {
+      const dates = [];
+      for (const [key, dateKey] of [["playing", "activeUpdatedAt"], ["visits", "visitsUpdatedAt"]]) {
+        const element = card.querySelector(`[data-stat="${key}"]`);
+        const value = game?.[key];
+        const valid = typeof value === "number" && Number.isFinite(value) && value >= 0;
+        if (valid) {
+          animateNumber(element, value, language);
+          element.title = new Intl.NumberFormat(language === "en" ? "en-US" : "ru-RU").format(value);
+          dates.push(formatDate(game[dateKey], language, { dateStyle: "short", timeStyle: "short" }));
+        } else {
+          element.textContent = "—";
+          element.removeAttribute("title");
+        }
+      }
+      const image = card.querySelector("img");
+      if (image && game?.image && image.src !== game.image) image.src = game.image;
+      if (status) status.textContent = dates.length
+        ? `${language === "en" ? "Roblox API snapshot" : "Снимок Roblox API"}: ${[...new Set(dates)].join(" / ")}${unavailable || game.status === "unavailable" ? (language === "en" ? " · Update unavailable; last successful data" : " · Обновление недоступно; последние успешные данные") : ""}`
+        : (language === "en" ? "Roblox API data unavailable" : "Данные Roblox API недоступны");
+      // Shared thumbnail handling below; numeric values and provenance are handled above.
+    }
     if (unavailable || !game) {
-      card.querySelectorAll(".stat-value").forEach((element) => { element.textContent = "—"; });
+      if (card.classList.contains("contribution-card")) continue;
+      card.querySelectorAll(".stat-value[data-stat]").forEach((element) => { element.textContent = "—"; });
       if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
       continue;
     }
@@ -215,6 +251,10 @@ export function updateQAStats(stats, language, unavailable = false) {
       }, { once: true });
       placeholder?.remove();
       card.prepend(image);
+    }
+    if (card.classList.contains("contribution-card")) {
+      card.classList.toggle("loaded", game.status !== "unavailable");
+      continue;
     }
     animateNumber(card.querySelector('[data-stat="playing"]'), game.playing, language);
     animateNumber(card.querySelector('[data-stat="visits"]'), game.visits, language);

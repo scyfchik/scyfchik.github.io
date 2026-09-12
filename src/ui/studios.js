@@ -1,6 +1,4 @@
 import { clearElement, createElement, localize } from "../utils/dom.js";
-import { animateNumber, formatDate, formatNumber } from "../utils/formatters.js";
-import { createLineChart, destroyChartGroup } from "./charts.js";
 
 const FEATURED_GAME_LIMIT = 3;
 let currentStudios = null;
@@ -10,34 +8,17 @@ function labels(language) {
     ? {
         gamesTitle: "Studio games",
         showMore: (count) => `Show ${count} more`,
-        gameCount: "Public games",
-        playing: "Playing now",
-        visits: "Total visits",
-        history: "History is being collected",
-        unavailable: "Stats temporarily unavailable",
+        unavailable: "Studio catalogue temporarily unavailable",
         group: "Open group",
         openGame: "Open game",
-        updated: "Updated",
       }
     : {
         gamesTitle: "Игры студии",
         showMore: (count) => `Показать ещё ${count}`,
-        gameCount: "Публичных игр",
-        playing: "Сейчас играют",
-        visits: "Всего визитов",
-        history: "История собирается",
-        unavailable: "Статистика временно недоступна",
+        unavailable: "Каталог студии временно недоступен",
         group: "Открыть группу",
         openGame: "Открыть игру",
-        updated: "Обновлено",
       };
-}
-
-function statRow(label, value, key) {
-  return createElement("p", {}, [
-    createElement("span", { text: label }),
-    createElement("strong", { text: value, dataset: { stat: key } }),
-  ]);
 }
 
 function gameThumbnail(game) {
@@ -49,11 +30,9 @@ function gameThumbnail(game) {
 }
 
 function gameItem(game, language, text) {
-  const playing = game.playing === null ? "—" : formatNumber(game.playing, language);
-  const visits = game.visits === null ? "—" : formatNumber(game.visits, language);
   const content = createElement("div", { className: "studio-game-info" }, [
     createElement("strong", { text: game.name }),
-    createElement("span", { text: `${text.playing}: ${playing} · ${text.visits}: ${visits}` }),
+    createElement("span", { text: text.openGame }),
   ]);
   const attrs = game.url
     ? { href: game.url, target: "_blank", rel: "noopener noreferrer", "aria-label": `${text.openGame}: ${game.name}` }
@@ -93,27 +72,9 @@ function renderStudioCard(studio, language, text) {
     studio.groupUrl ? createElement("a", { className: "studio-group-link", text: text.group, attrs: { href: studio.groupUrl, target: "_blank", rel: "noopener noreferrer" } }) : null,
   ]);
   const role = createElement("p", { className: "studio-role", text: localize(studio.roles, language).join(", ") || "—" });
-  const stats = createElement("div", { className: "studios-stats" }, [
-    statRow(text.gameCount, String(studio.gameCount), "games"),
-    statRow(text.playing, "—", "ccu"),
-    statRow(text.visits, "—", "visits"),
-  ]);
-  card.append(heading, role, stats, gamesSection(studio, language, text));
-
-  animateNumber(card.querySelector('[data-stat="ccu"]'), studio.totalPlaying, language);
-  animateNumber(card.querySelector('[data-stat="visits"]'), studio.totalVisits, language);
-
-  if (studio.history.length > 1) {
-    const canvas = createElement("canvas", { className: "ccu-chart", attrs: { id: `chart-${studio.id}` } });
-    card.append(canvas);
-    createLineChart(`studio:${studio.id}`, canvas, studio.history.map((point) => point.playing), `${studio.name} - CCU History`);
-  } else if (studio.status !== "unavailable") {
-    card.append(createElement("p", { className: "stats-updated studio-history-state", text: text.history }));
-  }
-
-  const updated = formatDate(studio.updatedAt, language, { dateStyle: "medium", timeStyle: "short" });
-  const statusText = studio.status === "unavailable" || updated === "—" ? text.unavailable : `${text.updated}: ${updated}`;
-  card.append(createElement("div", { className: `stats-updated${studio.status === "unavailable" ? " stats-unavailable" : ""}`, text: statusText }));
+  const contribution = createElement("p", { className: "studio-contribution", text: localize(studio.contribution, language) });
+  const context = createElement("p", { className: "stats-updated", text: language === "en" ? "Studio catalogue — not a claim of work on every listed game." : "Каталог студии — не список личного участия в каждой игре." });
+  card.append(heading, role, contribution, context, gamesSection(studio, language, text));
   card.classList.toggle("loaded", studio.status !== "unavailable");
   return card;
 }
@@ -122,7 +83,7 @@ export function renderStudios(studios, _robloxStats, language) {
   currentStudios = studios;
   const root = document.getElementById("studiosGrid");
   if (!root) return;
-  destroyChartGroup("studio:");
+
   clearElement(root);
   const text = labels(language);
   for (const studio of Object.values(studios || {})) root.append(renderStudioCard(studio, language, text));
@@ -140,8 +101,8 @@ export function updateStudiosLanguage(language) {
 export function showStudiosUnavailable(language) {
   const text = labels(language);
   document.querySelectorAll(".studios-card").forEach((card) => {
-    card.querySelectorAll('[data-stat="ccu"], [data-stat="visits"]').forEach((element) => { element.textContent = "—"; });
-    const statuses = card.querySelectorAll(".stats-updated");
+
+    const statuses = card.querySelectorAll(".studio-games .stats-unavailable");
     const last = statuses[statuses.length - 1];
     if (last) last.textContent = text.unavailable;
   });

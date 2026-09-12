@@ -9,8 +9,6 @@
 
   document.documentElement.classList.add("file-fallback");
   document.querySelectorAll(".reveal").forEach((element) => element.classList.add("visible"));
-  const dashboardStatus = document.getElementById("dashboardStatus");
-  if (dashboardStatus) dashboardStatus.textContent = "Статистика пока недоступна";
 
   const menuButton = document.querySelector(".menu-toggle");
   const navigation = document.getElementById("main-navigation");

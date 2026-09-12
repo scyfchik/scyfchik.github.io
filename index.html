@@ -6,7 +6,6 @@
     <meta name="description" content="Lunyxzz - Cybersecurity student, QA Specialist, and Roblox Developer Portfolio">
     <title>Lunyxzz | Portfolio</title>
     <link rel="stylesheet" href="./styles/main.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="./src/loader.js" defer></script>
 </head>
 <body>
@@ -19,6 +18,7 @@
         <li><a href="#about" data-ru="Обо мне" data-en="About">Обо мне</a></li>
         <li><a href="#skills" data-ru="Навыки" data-en="Skills">Навыки</a></li>
         <li><a href="#qa" data-ru="QA Experience" data-en="QA Experience">QA Experience</a></li>
+        <li><a href="#contribution" data-ru="Вклад в проекты" data-en="Contribution">Вклад в проекты</a></li>
         <li><a href="#community" data-ru="Сообщество и модерация" data-en="Community &amp; Moderation">Сообщество и модерация</a></li>
         <li><a href="#studios" data-ru="Игровые студии" data-en="Game Studios">Игровые студии</a></li>
         <li><a href="#contacts" data-ru="Контакты" data-en="Contact">Контакты</a></li>
@@ -81,6 +81,27 @@
         </div>
     </section>
 
+    <section id="contribution" class="section reveal">
+        <h2 data-ru="Вклад в проекты" data-en="Contribution">Вклад в проекты</h2>
+        <p class="section-intro" data-ru="Тестирование, обратная связь и анализ вне официальных команд проектов." data-en="Testing, feedback and analysis outside official project teams.">Тестирование, обратная связь и анализ вне официальных команд проектов.</p>
+        <div class="cards project-grid" id="contributionGrid">
+            <article class="card project-card qa-card studios-card contribution-card">
+                <img src="https://tr.rbxcdn.com/180DAY-4091747afd807e31c643fac0b3ad3448/512/512/Image/Png/noFilter" alt="Catalog Avatar Creator" loading="lazy">
+                <h3>Catalog Avatar Creator</h3>
+                <p class="project-role">QA Contributor</p>
+                <p class="project-description">Вклад через тестирование, обратную связь и анализ Roblox-проекта с миллиардами посещений.</p>
+                <div class="testing-types">Тестирование · Обратная связь · Анализ</div>
+                <p class="stats-updated">Roblox · Avatar Experience</p>
+                <div class="roblox-stats">
+                    <div class="stat-pill"><span class="stat-value">—</span><span class="stat-label">Онлайн</span></div>
+                    <div class="stat-pill"><span class="stat-value">—</span><span class="stat-label">Визиты</span></div>
+                </div>
+                <div class="stats-updated">Данные Roblox API недоступны без JavaScript</div>
+                <a class="studio-group-link" href="https://www.roblox.com/games/7041939546/Catalog-Avatar-Creator" target="_blank" rel="noopener noreferrer">Открыть проект</a>
+            </article>
+        </div>
+    </section>
+
     <section id="community" class="section reveal">
         <h2 data-ru="Сообщество и модерация" data-en="Community &amp; Moderation">Сообщество и модерация</h2>
         <div class="cards project-grid qa-grid" id="communityGrid">
@@ -92,30 +113,11 @@
     <section id="studios" class="section reveal">
         <h2 data-ru="Игровые студии" data-en="Game Studios">Игровые студии</h2>
         <div class="cards small-grid" id="studiosGrid" aria-live="polite">
-            <div class="card studios-card" data-type="studio" data-studio="per-games"><div class="studio-heading"><h3>Per Games</h3><a class="studio-group-link" href="https://www.roblox.com/communities/5664878/Per-Games#!/about" target="_blank" rel="noopener noreferrer">Открыть группу</a></div><p class="studio-role">QA Tester, Support Specialist</p><div class="studios-stats"><p>Публичных игр: <strong>—</strong></p><p>Сейчас играют: <strong>—</strong></p><p>Всего визитов: <strong>—</strong></p></div><div class="studio-games"><h4>Игры студии</h4><p class="stats-updated stats-unavailable">Статистика временно недоступна</p></div></div>
-            <div class="card studios-card" data-type="studio" data-studio="habit-games"><div class="studio-heading"><h3>Habit Games!</h3><a class="studio-group-link" href="https://www.roblox.com/communities/12860813/Habit-Games#!/about" target="_blank" rel="noopener noreferrer">Открыть группу</a></div><p class="studio-role">QA Tester</p><div class="studios-stats"><p>Публичных игр: <strong>—</strong></p><p>Сейчас играют: <strong>—</strong></p><p>Всего визитов: <strong>—</strong></p></div><div class="studio-games"><h4>Игры студии</h4><p class="stats-updated stats-unavailable">Статистика временно недоступна</p></div></div>
+            <div class="card studios-card" data-type="studio" data-studio="per-games"><div class="studio-heading"><h3>Per Games</h3><a class="studio-group-link" href="https://www.roblox.com/communities/5664878/Per-Games#!/about" target="_blank" rel="noopener noreferrer">Открыть группу</a></div><p class="studio-role">QA Tester, Support Specialist</p><div class="studio-games"><h4>Игры студии</h4><p class="stats-updated stats-unavailable">Статистика временно недоступна</p></div></div>
+            <div class="card studios-card" data-type="studio" data-studio="habit-games"><div class="studio-heading"><h3>Habit Games!</h3><a class="studio-group-link" href="https://www.roblox.com/communities/12860813/Habit-Games#!/about" target="_blank" rel="noopener noreferrer">Открыть группу</a></div><p class="studio-role">QA Tester</p><div class="studio-games"><h4>Игры студии</h4><p class="stats-updated stats-unavailable">Статистика временно недоступна</p></div></div>
         </div>
     </section>
 
-    <section id="dashboard" class="section reveal">
-        <h2>Dev Dashboard</h2>
-        <div class="dashboard-summary" aria-label="Сводка Roblox-статистики" data-aria-ru="Сводка Roblox-статистики" data-aria-en="Roblox statistics summary">
-            <div class="stat-item summary-item"><span class="stat-label" data-ru="Игр отслеживается" data-en="Games tracked">Игр отслеживается</span><strong class="stat-value" id="dashTotalGames">—</strong></div>
-            <div class="stat-item summary-item"><span class="stat-label" data-ru="Всего визитов" data-en="Combined visits">Всего визитов</span><strong class="stat-value" id="dashTotalVisits">—</strong></div>
-            <div class="stat-item summary-item"><span class="stat-label" data-ru="Сейчас играют" data-en="Active players">Сейчас играют</span><strong class="stat-value" id="dashActivePlayers">—</strong></div>
-            <div class="stat-item summary-item"><span class="stat-label" data-ru="Обновлено" data-en="Last update">Обновлено</span><strong class="stat-value" id="dashLastUpdate">—</strong></div>
-        </div>
-        <p class="stats-updated dashboard-status" id="dashboardStatus" aria-live="polite" data-ru="Статистика загружается..." data-en="Loading statistics...">Статистика загружается...</p>
-        <div class="dash-wrapper">
-            <button class="dash-arrow left" id="dashPrev" type="button" aria-label="Предыдущий слайд" data-aria-ru="Предыдущий слайд" data-aria-en="Previous slide">←</button>
-            <button class="dash-arrow right" id="dashNext" type="button" aria-label="Следующий слайд" data-aria-ru="Следующий слайд" data-aria-en="Next slide">→</button>
-            <div class="dash-frame"><div class="dash-track" id="dashTrack" aria-live="polite">
-                <div class="dash-slide"><div class="dash-title">Per Games</div><div class="dashboard-grid"><div class="chart-container"><canvas></canvas></div><div class="stats-panel"><div class="stat-item"><span class="stat-label">Роль:</span><span class="stat-value">QA Tester, Support Specialist</span></div><div class="stat-item"><span class="stat-label">Discord:</span><span class="stat-value">—</span></div><div class="stat-item"><span class="stat-label">Группа:</span><span class="stat-value">—</span></div><div class="stat-item"><span class="stat-label">CCU:</span><span class="stat-value">170</span></div></div></div></div>
-                <div class="dash-slide"><div class="dash-title">Habit Games!</div><div class="dashboard-grid"><div class="chart-container"><canvas></canvas></div><div class="stats-panel"><div class="stat-item"><span class="stat-label">Роль:</span><span class="stat-value">QA Tester</span></div><div class="stat-item"><span class="stat-label">Discord:</span><span class="stat-value">—</span></div><div class="stat-item"><span class="stat-label">Группа:</span><span class="stat-value">—</span></div><div class="stat-item"><span class="stat-label">CCU:</span><span class="stat-value">60</span></div></div></div></div>
-            </div></div>
-            <div class="dash-dots" id="dashDots"></div>
-        </div>
-    </section>
 
     <section id="experience" class="section reveal">
         <h2 data-ru="Опыт" data-en="Experience">Опыт</h2>
