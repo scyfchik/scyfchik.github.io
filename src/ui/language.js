@@ -3,13 +3,12 @@ import { getState } from "../state/appState.js";
 import { readStorage, writeStorage } from "../utils/browser.js";
 
 let changeHandler = () => {};
-let initialized = false;
 
 function normalizeLanguage(language) {
   return CONFIG.language.supported.includes(language) ? language : CONFIG.language.default;
 }
 
-export function applyStaticTranslations(language) {
+function applyStaticTranslations(language) {
   document.querySelectorAll("[data-ru][data-en]").forEach((element) => {
     const value = element.getAttribute(`data-${language}`);
     if (value !== null) element.textContent = value;
@@ -20,7 +19,7 @@ export function applyStaticTranslations(language) {
   });
 }
 
-export function setLanguage(language, { persist = true, notify = true } = {}) {
+function setLanguage(language, { persist = true, notify = true } = {}) {
   const nextLanguage = normalizeLanguage(language);
   getState().currentLanguage = nextLanguage;
   document.documentElement.lang = nextLanguage;
@@ -38,11 +37,8 @@ export function setLanguage(language, { persist = true, notify = true } = {}) {
 
 export function initializeLanguage(onChange) {
   changeHandler = onChange;
-  if (!initialized) {
-    document.getElementById("ruBtn")?.addEventListener("click", () => setLanguage("ru"));
-    document.getElementById("enBtn")?.addEventListener("click", () => setLanguage("en"));
-    initialized = true;
-  }
+  document.getElementById("ruBtn")?.addEventListener("click", () => setLanguage("ru"));
+  document.getElementById("enBtn")?.addEventListener("click", () => setLanguage("en"));
   const saved = readStorage(CONFIG.language.storageKey, CONFIG.language.default);
   setLanguage(saved, { persist: false, notify: false });
   return getState().currentLanguage;

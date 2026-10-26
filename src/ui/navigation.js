@@ -1,8 +1,4 @@
-let initialized = false;
-let navObserver;
-
 export function initializeNavigation() {
-  if (initialized) return;
   const menuButton = document.querySelector(".menu-toggle");
   const navigation = document.getElementById("main-navigation");
   const menuLabel = (open) => document.documentElement.lang === "en"
@@ -20,23 +16,18 @@ export function initializeNavigation() {
     menuButton?.setAttribute("aria-label", menuLabel(open));
     navigation?.classList.toggle("open", open);
   };
-  const handleEscape = (event) => { if (event.key === "Escape") closeMenu(); };
-  const handleResize = () => { if (window.innerWidth > 800) closeMenu(); };
 
   menuButton?.addEventListener("click", toggleMenu);
   navigation?.querySelectorAll('a[href^="#"]').forEach((link) => link.addEventListener("click", closeMenu));
-  document.addEventListener("keydown", handleEscape);
-  window.addEventListener("resize", handleResize);
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeMenu(); });
+  window.addEventListener("resize", () => { if (window.innerWidth > 800) closeMenu(); });
 
   const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
   const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
-  if ("IntersectionObserver" in window) {
-    navObserver = new IntersectionObserver((entries) => {
-      const visible = entries.find((entry) => entry.isIntersecting);
-      if (!visible) return;
-      links.forEach((link) => link.classList.toggle("active-nav", link.getAttribute("href") === `#${visible.target.id}`));
-    }, { rootMargin: "-35% 0px -55%", threshold: 0 });
-    sections.forEach((section) => navObserver.observe(section));
-  }
-  initialized = true;
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries.find((entry) => entry.isIntersecting);
+    if (!visible) return;
+    links.forEach((link) => link.classList.toggle("active-nav", link.getAttribute("href") === `#${visible.target.id}`));
+  }, { rootMargin: "-35% 0px -55%", threshold: 0 });
+  sections.forEach((section) => observer.observe(section));
 }

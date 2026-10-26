@@ -21,8 +21,3 @@ export function clearElement(element) {
 export function localize(value, language) {
   return value && typeof value === "object" ? value[language] ?? value.ru ?? value.en ?? "" : value ?? "";
 }
-
-export function setText(selector, text) {
-  const element = document.querySelector(selector);
-  if (element) element.textContent = String(text);
-}

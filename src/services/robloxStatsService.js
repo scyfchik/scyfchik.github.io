@@ -11,19 +11,14 @@ function normalizeGame(game, key) {
   };
 }
 
+// "no-cache" revalidates with the server (304 when unchanged) instead of re-downloading the file every refresh.
 export async function fetchRobloxStats() {
-  try {
-    const response = await fetch(CONFIG.paths.robloxStats, { cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const payload = await response.json();
-    if (!payload || typeof payload !== "object" || Array.isArray(payload) || !payload.games || typeof payload.games !== "object") {
-      throw new Error("Некорректный формат roblox-stats.json");
-    }
-    return {
-      updatedAt: payload.updatedAt ?? null,
-      games: Object.fromEntries(Object.entries(payload.games).map(([key, game]) => [String(key), normalizeGame(game, key)])),
-    };
-  } catch (error) {
-    throw new Error(`Не удалось загрузить статистику Roblox: ${error.message}`, { cause: error });
-  }
+  const response = await fetch(CONFIG.paths.robloxStats, { cache: "no-cache" });
+  if (!response.ok) throw new Error(`roblox-stats.json: HTTP ${response.status}`);
+  const payload = await response.json();
+  if (!payload?.games) throw new Error("roblox-stats.json: missing games");
+  return {
+    updatedAt: payload.updatedAt ?? null,
+    games: Object.fromEntries(Object.entries(payload.games).map(([key, game]) => [key, normalizeGame(game, key)])),
+  };
 }

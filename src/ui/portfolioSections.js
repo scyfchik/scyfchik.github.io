@@ -7,13 +7,16 @@ import { experienceItems } from "../data/experience.js";
 import { clearElement, createElement, localize } from "../utils/dom.js";
 import { animateNumber, formatDate } from "../utils/formatters.js";
 
+// Projects at or above this get a full card; the rest go into the compact list below them.
+const FEATURED_MIN_VISITS = 100_000_000;
+
+const statLabels = { playing: { ru: "Онлайн", en: "Active" }, visits: { ru: "Визиты", en: "Visits" } };
+
 function getProjectVisits(project, stats) {
-  const game = stats?.games?.[project.placeId];
-  if (!game) return 0;
-  return Number(game.visits) || 0;
+  return stats?.games?.[project.placeId]?.visits ?? 0;
 }
 
-export function getSortedQAProjects(stats = null) {
+function getSortedQAProjects(stats) {
   return qaProjects
     .map((project, index) => ({ project, index }))
     .sort((left, right) => (
@@ -23,14 +26,25 @@ export function getSortedQAProjects(stats = null) {
     .map(({ project }) => project);
 }
 
-function sortQACards(stats) {
-  const root = document.getElementById("qaGrid");
-  if (!root) return;
-  const cards = new Map([...root.querySelectorAll(".qa-card[data-place-id]")].map((card) => [card.dataset.placeId, card]));
-  const sortedCards = getSortedQAProjects(stats).map((project) => cards.get(String(project.placeId))).filter(Boolean);
-  const currentCards = [...root.querySelectorAll(".qa-card[data-place-id]")];
-  if (sortedCards.length === currentCards.length && sortedCards.every((card, index) => card === currentCards[index])) return;
-  root.append(...sortedCards);
+function isLeadRole(role) {
+  return /lead|manager/i.test(role);
+}
+
+// Cards start with a text placeholder; the Roblox icon replaces it once stats arrive,
+// and the placeholder comes back if the CDN image fails to load.
+function showThumbnail(card, src, alt) {
+  let image = card.querySelector("img");
+  if (!image) {
+    const placeholder = card.querySelector(".project-placeholder");
+    image = createElement("img", { attrs: { alt, loading: "lazy" } });
+    image.addEventListener("error", () => {
+      image.remove();
+      if (placeholder && !placeholder.isConnected) card.prepend(placeholder);
+    }, { once: true });
+    placeholder?.remove();
+    card.prepend(image);
+  }
+  if (image.src !== src) image.src = src;
 }
 
 function renderAbout(language) {
@@ -62,43 +76,111 @@ function createProjectPlaceholder(project) {
   ]);
 }
 
-function createStats(language) {
-  const stats = createElement("div", { className: "roblox-stats", attrs: { "aria-label": "Roblox statistics" } });
-  const entries = [{ key: "playing", ru: "Онлайн", en: "Active" }, { key: "visits", ru: "Визиты", en: "Visits" }];
-  for (const item of entries) {
-    stats.append(createElement("div", { className: "stat-pill" }, [
-      createElement("span", { className: "stat-value", text: "—", dataset: { stat: item.key } }),
-      createElement("span", { className: "stat-label", text: item[language] }),
-    ]));
-  }
-  return stats;
+function createTestingTypes(text) {
+  return createElement("div", { className: "testing-types" }, text.split("·").map((item) => createElement("span", { text: item.trim() })));
 }
 
-function renderQA(language) {
+function createRole(role) {
+  return createElement("p", { className: isLeadRole(role) ? "project-role is-lead" : "project-role", text: role });
+}
+
+function createStats(language) {
+  return createElement("div", { className: "roblox-stats", attrs: { "aria-label": "Roblox statistics" } }, ["playing", "visits"].map((key) => (
+    createElement("div", { className: "stat-pill" }, [
+      createElement("span", { className: "stat-value", text: "—", dataset: { stat: key } }),
+      createElement("span", { className: "stat-label", text: localize(statLabels[key], language) }),
+    ])
+  )));
+}
+
+function unavailableText(language) {
+  return language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
+}
+
+function updatedText(game, language) {
+  if (game.status === "unavailable") return language === "en" ? "Update unavailable; last successful data" : "Обновление недоступно; последние успешные данные";
+  const time = formatDate(game.activeUpdatedAt, language, { hour: "2-digit", minute: "2-digit" });
+  return `${language === "en" ? "Updated" : "Обновлено"}: ${time}`;
+}
+
+function createFeaturedCard(project, game, language) {
+  const card = createElement("a", {
+    className: "card project-card qa-card",
+    attrs: { href: project.url, target: "_blank", rel: "noopener noreferrer" },
+    dataset: { placeId: project.placeId },
+  });
+  card.append(
+    createProjectPlaceholder(project),
+    createElement("div", { className: "project-heading" }, [createElement("h3", { text: project.title }), createElement("span", { text: "↗", attrs: { "aria-hidden": "true" } })]),
+    createRole(project.role),
+    createElement("p", { className: "project-description", text: localize(project.description, language) }),
+    createTestingTypes(project.testingTypes),
+    createStats(language),
+    createElement("div", { className: "stats-updated", text: updatedText(game, language) }),
+  );
+  if (game.image) showThumbnail(card, game.image, project.alt || project.title);
+  animateNumber(card.querySelector('[data-stat="playing"]'), game.playing, language);
+  animateNumber(card.querySelector('[data-stat="visits"]'), game.visits, language);
+  card.classList.add("loaded");
+  return card;
+}
+
+function createCompactCard(project, game, language) {
+  const thumb = game?.image
+    ? createElement("img", { className: "qa-compact-thumb", attrs: { src: game.image, alt: "", loading: "lazy" } })
+    : createElement("div", { className: "qa-compact-thumb", text: project.mark, attrs: { "aria-hidden": "true" } });
+  if (game?.image) thumb.addEventListener("error", () => thumb.replaceWith(createElement("div", { className: "qa-compact-thumb", text: project.mark, attrs: { "aria-hidden": "true" } })), { once: true });
+
+  const meta = game
+    ? createElement("p", { className: "qa-compact-meta" }, [
+      ...["visits", "playing"].map((key) => createElement("span", {}, [
+        createElement("strong", { text: "—", dataset: { stat: key } }),
+        ` ${localize(statLabels[key], language).toLowerCase()}`,
+      ])),
+      game.status === "unavailable" ? createElement("span", { className: "stats-unavailable", text: updatedText(game, language) }) : null,
+    ])
+    : createElement("p", { className: "qa-compact-meta stats-unavailable", text: unavailableText(language) });
+
+  const card = createElement("a", {
+    className: "card qa-card qa-compact-card",
+    attrs: { href: project.url, target: "_blank", rel: "noopener noreferrer" },
+    dataset: { placeId: project.placeId },
+  }, [
+    thumb,
+    createElement("div", { className: "qa-compact-body" }, [
+      createElement("div", { className: "project-heading" }, [createElement("h3", { text: project.title }), createElement("span", { text: "↗", attrs: { "aria-hidden": "true" } })]),
+      createRole(project.role),
+      createElement("p", { className: "project-description", text: localize(project.description, language) }),
+      createTestingTypes(project.testingTypes),
+      meta,
+    ]),
+  ]);
+  if (meta.querySelector("[data-stat]")) {
+    animateNumber(meta.querySelector('[data-stat="visits"]'), game.visits, language);
+    animateNumber(meta.querySelector('[data-stat="playing"]'), game.playing, language);
+  }
+  return card;
+}
+
+function renderQA(language, stats) {
   const root = document.getElementById("qaGrid");
   if (!root) return;
+  const projects = getSortedQAProjects(stats);
+  const isFeatured = (project) => getProjectVisits(project, stats) >= FEATURED_MIN_VISITS;
+  const featured = projects.filter(isFeatured);
+  const rest = projects.filter((project) => !isFeatured(project));
+
   clearElement(root);
-  for (const project of getSortedQAProjects()) {
-    const card = createElement("a", {
-      className: "card project-card qa-card",
-      attrs: { href: project.url, target: "_blank", rel: "noopener noreferrer" },
-      dataset: project.placeId ? { placeId: project.placeId } : {},
-    });
-    if (project.image) card.append(createElement("img", { attrs: { src: project.image, alt: project.alt, loading: "lazy" } }));
-    else card.append(createProjectPlaceholder(project));
-    card.append(
-      createElement("div", { className: "project-heading" }, [createElement("h3", { text: project.title }), createElement("span", { text: "↗", attrs: { "aria-hidden": "true" } })]),
-      createElement("p", { className: "project-role", text: project.role }),
-      createElement("p", { className: "project-description", text: localize(project.description, language) }),
-      createElement("div", { className: "testing-types", text: project.testingTypes }),
-    );
-    if (project.placeId) {
-      card.append(createStats(language), createElement("div", { className: "stats-updated", text: language === "en" ? "Loading stats..." : "Статистика загружается..." }));
-    } else {
-      card.append(createElement("div", { className: "stats-updated stats-unavailable", text: language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна" }));
-    }
-    card.append(createElement("span", { text: language === "en" ? "Roblox project" : "Roblox-проект" }));
-    root.append(card);
+  if (featured.length) {
+    const cards = featured.map((project) => createFeaturedCard(project, stats.games[project.placeId], language));
+    // Rows of three; an incomplete last row is stretched so the grid has no gaps (5 cards → 3 + 2).
+    const remainder = cards.length % 3;
+    if (remainder) cards.slice(-remainder).forEach((card) => card.classList.add(remainder === 1 ? "qa-span-full" : "qa-span-half"));
+    root.append(createElement("div", { className: "cards qa-featured" }, cards));
+  }
+  if (rest.length) {
+    if (featured.length) root.append(createElement("h3", { className: "qa-subheading", text: language === "en" ? "More projects" : "Другие проекты" }));
+    root.append(createElement("div", { className: "qa-compact" }, rest.map((project) => createCompactCard(project, stats?.games?.[project.placeId], language))));
   }
 }
 
@@ -126,24 +208,20 @@ function renderCommunity(language, projects = communityProjects, rootId = "commu
       ]),
       createElement("p", { className: "project-role", text: localize(project.role, language) }),
       createElement("p", { className: "project-description", text: localize(project.description, language) }),
-      createElement("div", { className: "testing-types", text: localize(project.category || project.testingTypes, language) }),
+      createTestingTypes(localize(project.category || project.testingTypes, language)),
     );
     if (isContribution) {
       card.append(
         createElement("p", { className: "stats-updated", text: `${project.platform} · ${project.experienceCategory}` }),
         createStats(language),
         createElement("div", { className: "stats-updated contribution-source", text: language === "en" ? "Roblox API snapshot unavailable" : "Снимок Roblox API недоступен" }),
+        createElement("a", { className: "studio-group-link", text: localize(project.status, language), attrs: { href: project.url, target: "_blank", rel: "noopener noreferrer" } }),
       );
     } else if (project.placeId) {
       card.append(createStats(language), createElement("div", { className: "stats-updated", text: language === "en" ? "Loading stats..." : "Статистика загружается..." }));
     } else {
-      card.append(createElement("div", { className: "stats-updated stats-unavailable", text: language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна" }));
+      card.append(createElement("div", { className: "stats-updated stats-unavailable", text: unavailableText(language) }));
     }
-    card.append(createElement(isContribution ? "a" : "span", {
-      className: isContribution ? "studio-group-link" : "",
-      text: localize(project.status, language),
-      attrs: isContribution ? { href: project.url, target: "_blank", rel: "noopener noreferrer" } : {},
-    }));
     root.append(card);
   }
 }
@@ -153,66 +231,38 @@ function renderExperience(language) {
   if (!root) return;
   clearElement(root);
   for (const experience of experienceItems) {
-    const list = createElement("ul", {}, experience.items.map((item) => createElement("li", { text: localize(item, language) })));
+    const details = experience.projects
+      ? experience.projects.map((project) => createElement("div", { className: "experience-project" }, [
+        createElement("h4", { text: project.title }),
+        createElement("p", { text: localize(project.description, language) }),
+        createElement("span", { className: "experience-stack", text: project.stack }),
+      ]))
+      : createElement("ul", {}, experience.items.map((item) => createElement("li", { text: localize(item, language) })));
     root.append(createElement("div", { className: "experience-card" }, [
       createElement("h3", { text: localize(experience.title, language) }),
       createElement("p", { text: localize(experience.description, language) }),
-      list,
+      details,
     ]));
   }
 }
 
+// QA is left out on purpose: its layout depends on visit counts, so it is rendered from
+// updateQAStats once stats are known. Until then the static copy in index.html is shown.
 export function renderPortfolioSections(language) {
   renderAbout(language);
   renderSkills();
-  renderQA(language);
   renderCommunity(language);
   renderCommunity(language, contributionProjects, "contributionGrid");
   renderExperience(language);
 }
 
 export function updateQAStats(stats, language, unavailable = false) {
-  for (const project of qaProjects) {
-    if (!project.placeId) continue;
-    const card = document.querySelector(`.qa-card[data-place-id="${project.placeId}"]`);
-    if (!card) continue;
-    const game = stats?.games?.[project.placeId];
-    const status = card.querySelector(".stats-updated");
-    if (unavailable || !game) {
-      card.querySelectorAll(".stat-value").forEach((element) => { element.textContent = "—"; });
-      if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
-      continue;
-    }
-    if (game.image) {
-      const placeholder = card.querySelector(".project-placeholder");
-      let image = card.querySelector("img");
-      if (!image) {
-        image = createElement("img", { attrs: { alt: project.alt || project.title, loading: "lazy" } });
-        image.addEventListener("error", () => {
-          image.remove();
-          if (placeholder && !placeholder.isConnected) card.prepend(placeholder);
-        });
-        placeholder?.remove();
-        card.prepend(image);
-      }
-      if (image.src !== game.image) image.src = game.image;
-    }
-    animateNumber(card.querySelector('[data-stat="playing"]'), game.playing, language);
-    animateNumber(card.querySelector('[data-stat="visits"]'), game.visits, language);
-    if (game.status === "unavailable") {
-      if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
-      continue;
-    }
-    const time = formatDate(game.activeUpdatedAt, language, { hour: "2-digit", minute: "2-digit" });
-    if (status) status.textContent = `${language === "en" ? "Updated" : "Обновлено"}: ${time}`;
-    card.classList.add("loaded");
-  }
-
-  sortQACards(stats);
+  renderQA(language, unavailable ? null : stats);
 
   for (const card of document.querySelectorAll(".community-card[data-place-id]")) {
     const placeId = card.dataset.placeId;
     const game = stats?.games?.[placeId];
+    const statsBlock = card.querySelector(".roblox-stats");
     const status = card.querySelector(".contribution-source") || card.querySelector(".stats-updated");
     if (card.classList.contains("contribution-card")) {
       const dates = [];
@@ -229,41 +279,32 @@ export function updateQAStats(stats, language, unavailable = false) {
           element.removeAttribute("title");
         }
       }
+      statsBlock.hidden = dates.length === 0;
       const image = card.querySelector("img");
       if (image && game?.image && image.src !== game.image) image.src = game.image;
       if (status) status.textContent = dates.length
         ? `${language === "en" ? "Roblox API snapshot" : "Снимок Roblox API"}: ${[...new Set(dates)].join(" / ")}${unavailable || game.status === "unavailable" ? (language === "en" ? " · Update unavailable; last successful data" : " · Обновление недоступно; последние успешные данные") : ""}`
         : (language === "en" ? "Roblox API data unavailable" : "Данные Roblox API недоступны");
-      // Shared thumbnail handling below; numeric values and provenance are handled above.
     }
     if (unavailable || !game) {
       if (card.classList.contains("contribution-card")) continue;
-      card.querySelectorAll(".stat-value[data-stat]").forEach((element) => { element.textContent = "—"; });
-      if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
+      statsBlock.hidden = true;
+      if (status) status.textContent = unavailableText(language);
       continue;
     }
-    if (!card.querySelector("img") && game.image) {
-      const placeholder = card.querySelector(".project-placeholder");
-      const image = createElement("img", { attrs: { src: game.image, alt: game.name || "Roblox project", loading: "lazy" } });
-      image.addEventListener("error", () => {
-        image.remove();
-        if (placeholder && !placeholder.isConnected) card.prepend(placeholder);
-      }, { once: true });
-      placeholder?.remove();
-      card.prepend(image);
-    }
+    if (!card.querySelector("img") && game.image) showThumbnail(card, game.image, game.name || "Roblox project");
     if (card.classList.contains("contribution-card")) {
       card.classList.toggle("loaded", game.status !== "unavailable");
       continue;
     }
+    statsBlock.hidden = false;
     animateNumber(card.querySelector('[data-stat="playing"]'), game.playing, language);
     animateNumber(card.querySelector('[data-stat="visits"]'), game.visits, language);
     if (game.status === "unavailable") {
-      if (status) status.textContent = language === "en" ? "Stats currently unavailable" : "Статистика пока недоступна";
+      if (status) status.textContent = unavailableText(language);
       continue;
     }
-    const time = formatDate(game.activeUpdatedAt, language, { hour: "2-digit", minute: "2-digit" });
-    if (status) status.textContent = `${language === "en" ? "Updated" : "Обновлено"}: ${time}`;
+    if (status) status.textContent = updatedText(game, language);
     card.classList.add("loaded");
   }
 }

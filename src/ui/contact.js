@@ -4,7 +4,6 @@ import { copyText } from "../utils/browser.js";
 import { clearElement, createElement, localize } from "../utils/dom.js";
 
 let toastTimer;
-let initialized = false;
 
 function showToast(message) {
   const toast = document.getElementById("copyToast");
@@ -15,7 +14,7 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2200);
 }
 
-async function handleCopy() {
+async function copyDiscord() {
   const language = document.documentElement.lang === "en" ? "en" : "ru";
   try {
     await copyText(CONFIG.discordUsername);
@@ -41,15 +40,9 @@ export function renderContacts(language) {
 }
 
 export function initializeContact() {
-  if (initialized) return;
   document.addEventListener("click", (event) => {
-    if (event.target.closest(".copy-discord")) handleCopy();
+    if (event.target.closest(".copy-discord")) copyDiscord();
   });
   const year = document.getElementById("currentYear");
   if (year) year.textContent = String(new Date().getFullYear());
-  initialized = true;
-}
-
-export function cleanupContact() {
-  window.clearTimeout(toastTimer);
 }

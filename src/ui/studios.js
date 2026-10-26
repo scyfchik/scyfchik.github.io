@@ -29,7 +29,7 @@ function gameThumbnail(game) {
   return image;
 }
 
-function gameItem(game, language, text) {
+function gameItem(game, text) {
   const content = createElement("div", { className: "studio-game-info" }, [
     createElement("strong", { text: game.name }),
     createElement("span", { text: text.openGame }),
@@ -40,20 +40,20 @@ function gameItem(game, language, text) {
   return createElement(game.url ? "a" : "div", { className: "studio-game-item", attrs }, [gameThumbnail(game), content]);
 }
 
-function gamesSection(studio, language, text) {
+function gamesSection(studio, text) {
   const section = createElement("div", { className: "studio-games" }, [createElement("h4", { text: text.gamesTitle })]);
   if (!studio.games.length) {
     section.append(createElement("p", { className: "stats-updated stats-unavailable", text: text.unavailable }));
     return section;
   }
 
-  section.append(createElement("div", { className: "studio-games-list" }, studio.games.slice(0, FEATURED_GAME_LIMIT).map((game) => gameItem(game, language, text))));
+  section.append(createElement("div", { className: "studio-games-list" }, studio.games.slice(0, FEATURED_GAME_LIMIT).map((game) => gameItem(game, text))));
   const remaining = studio.games.slice(FEATURED_GAME_LIMIT);
   if (remaining.length) {
     const summary = createElement("summary", { text: text.showMore(remaining.length) });
     const details = createElement("details", { className: "studio-games-more" }, [
       summary,
-      createElement("div", { className: "studio-games-list" }, remaining.map((game) => gameItem(game, language, text))),
+      createElement("div", { className: "studio-games-list" }, remaining.map((game) => gameItem(game, text))),
     ]);
     summary.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
@@ -74,12 +74,12 @@ function renderStudioCard(studio, language, text) {
   const role = createElement("p", { className: "studio-role", text: localize(studio.roles, language).join(", ") || "—" });
   const contribution = createElement("p", { className: "studio-contribution", text: localize(studio.contribution, language) });
   const context = createElement("p", { className: "stats-updated", text: language === "en" ? "Studio catalogue — not a claim of work on every listed game." : "Каталог студии — не список личного участия в каждой игре." });
-  card.append(heading, role, contribution, context, gamesSection(studio, language, text));
+  card.append(heading, role, contribution, context, gamesSection(studio, text));
   card.classList.toggle("loaded", studio.status !== "unavailable");
   return card;
 }
 
-export function renderStudios(studios, _robloxStats, language) {
+export function renderStudios(studios, language) {
   currentStudios = studios;
   const root = document.getElementById("studiosGrid");
   if (!root) return;
@@ -90,18 +90,13 @@ export function renderStudios(studios, _robloxStats, language) {
   if (!root.children.length) root.append(createElement("p", { className: "stats-updated stats-unavailable", text: text.unavailable }));
 }
 
-export function updateStudioStats(_stats, language) {
-  renderStudios(currentStudios, null, language);
-}
-
 export function updateStudiosLanguage(language) {
-  renderStudios(currentStudios, null, language);
+  renderStudios(currentStudios, language);
 }
 
 export function showStudiosUnavailable(language) {
   const text = labels(language);
   document.querySelectorAll(".studios-card").forEach((card) => {
-
     const statuses = card.querySelectorAll(".studio-games .stats-unavailable");
     const last = statuses[statuses.length - 1];
     if (last) last.textContent = text.unavailable;

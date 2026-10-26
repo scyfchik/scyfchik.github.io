@@ -7,7 +7,7 @@ html {
 body {
   font-family: "Segoe UI", Arial, sans-serif;
   color: var(--text);
-  background: linear-gradient(180deg, rgba(4, 10, 24, 0.45) 0%, rgba(4, 10, 24, 0.72) 35%, rgba(3, 8, 18, 0.88) 70%, rgba(3, 8, 18, 0.96) 100%), url("../section-bg.png") center top / cover fixed no-repeat, var(--bg);
+  background: linear-gradient(180deg, rgba(4, 10, 24, 0.45) 0%, rgba(4, 10, 24, 0.72) 35%, rgba(3, 8, 18, 0.88) 70%, rgba(3, 8, 18, 0.96) 100%), url("../section-bg.webp") center top / cover fixed no-repeat, var(--bg);
   overflow-x: hidden;
 }
 

@@ -1,16 +1,14 @@
 import { CONFIG } from "./config.js";
-import { getState, setResourceState, setState } from "./state/appState.js";
+import { getState, setResourceState } from "./state/appState.js";
 import { fetchRobloxStats } from "./services/robloxStatsService.js";
 import { fetchStudios } from "./services/studiosService.js";
-import { renderHero } from "./ui/hero.js";
+import { renderHero, updateHeroReach } from "./ui/hero.js";
 import { renderPortfolioSections, updateQAStats } from "./ui/portfolioSections.js";
 import { initializeLanguage } from "./ui/language.js";
 import { initializeNavigation } from "./ui/navigation.js";
 import { renderStudios, updateStudiosLanguage, showStudiosUnavailable } from "./ui/studios.js";
-import { renderContacts, initializeContact, cleanupContact } from "./ui/contact.js";
-import { initializeAnimations, cleanupAnimations } from "./ui/animations.js";
-
-let refreshTimer;
+import { renderContacts, initializeContact } from "./ui/contact.js";
+import { initializeAnimations } from "./ui/animations.js";
 
 function renderStaticContent(language) {
   renderHero(language);
@@ -21,6 +19,7 @@ function renderStaticContent(language) {
 function rerenderLocalizedContent(language) {
   const state = getState();
   renderStaticContent(language);
+  updateHeroReach(state.robloxStats, language);
   updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
   updateStudiosLanguage(language);
 }
@@ -35,26 +34,10 @@ async function loadData() {
   else setResourceState("studios", { error: studiosResult.reason });
 
   const language = state.currentLanguage;
+  updateHeroReach(state.robloxStats, language);
   updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
-  renderStudios(state.studios, state.robloxStats, language);
+  renderStudios(state.studios, language);
   if (state.errors.studios) showStudiosUnavailable(language);
-}
-
-function startRefreshTimer() {
-  if (refreshTimer) return;
-  refreshTimer = window.setInterval(() => {
-    loadData().catch(() => {
-      const state = getState();
-      updateQAStats(state.robloxStats, state.currentLanguage, !state.robloxStats);
-    });
-  }, CONFIG.refreshInterval);
-}
-
-function cleanup() {
-  window.clearInterval(refreshTimer);
-  refreshTimer = undefined;
-  cleanupContact();
-  cleanupAnimations();
 }
 
 async function bootstrap() {
@@ -64,9 +47,7 @@ async function bootstrap() {
   initializeContact();
   initializeAnimations();
   await loadData();
-  startRefreshTimer();
-  setState({ initialized: true });
-  window.addEventListener("beforeunload", cleanup, { once: true });
+  window.setInterval(loadData, CONFIG.refreshInterval);
 }
 
 bootstrap().catch((error) => {

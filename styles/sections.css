@@ -182,9 +182,7 @@
     line-height: 1.4;
 }
 
-/* =========================
-   GAME STUDIOS SECTION (FIXED)
-   ========================= */
+/* GAME STUDIOS */
 
 .studio-grid,
 .studios-grid {
@@ -224,12 +222,6 @@
     font-size: 12px;
 }
 
-.ccu-chart {
-    margin-top: 12px;
-    width: 100%;
-    height: 120px;
-}
-
 /* EXPERIENCE */
 
 .experience-grid {
@@ -244,7 +236,8 @@
 
 .experience-card h3,
 .experience-card p,
-.experience-card ul {
+.experience-card ul,
+.experience-project {
     position: relative;
     z-index: 2;
 }
@@ -265,6 +258,28 @@
     padding-left: 20px;
     color: var(--muted);
     line-height: 1.9;
+}
+
+.experience-project + .experience-project {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.experience-project h4 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.experience-card .experience-project p {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.experience-stack {
+    font-size: 14px;
+    color: var(--muted);
+    opacity: 0.8;
 }
 
 /* CONTACT */

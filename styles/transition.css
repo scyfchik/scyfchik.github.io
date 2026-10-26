@@ -16,7 +16,7 @@
     background:
         linear-gradient(90deg, rgba(3, 8, 20, 0.92) 0%, rgba(3, 8, 20, 0.74) 38%, rgba(3, 8, 20, 0.28) 72%, rgba(3, 8, 20, 0.45) 100%),
         linear-gradient(180deg, rgba(3, 8, 20, 0.05) 0%, rgba(3, 8, 20, 0.46) 64%, rgba(3, 8, 20, 0.96) 100%),
-        url("../hero-bg-harmonized.png") center / cover no-repeat;
+        url("../hero-bg-harmonized.webp") center / cover no-repeat;
     transform: translate3d(0, var(--hero-parallax-y), 0) scale(1.035);
     transform-origin: center top;
     will-change: transform;
@@ -29,7 +29,6 @@
 }
 
 #about {
-    --about-parallax-y: 0px;
     z-index: 3;
     isolation: isolate;
     margin-top: -56px;
@@ -63,7 +62,7 @@
         inset: -2% -2% 0;
         background:
             linear-gradient(180deg, rgba(3, 8, 20, 0.62) 0%, rgba(3, 8, 20, 0.82) 52%, rgba(3, 8, 20, 0.98) 100%),
-            url("../hero-bg-harmonized.png") 62% center / cover no-repeat;
+            url("../hero-bg-harmonized.webp") 62% center / cover no-repeat;
         transform: scale(1.02);
         will-change: auto;
         -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 480px), rgba(0, 0, 0, 0.82) calc(100% - 350px), rgba(0, 0, 0, 0.38) calc(100% - 190px), transparent calc(100% - 60px), transparent 100%);

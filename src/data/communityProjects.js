@@ -1,4 +1,3 @@
-// Community & Moderation entries
 export const communityProjects = Object.freeze([
   {
     id: "asylum-life-community",

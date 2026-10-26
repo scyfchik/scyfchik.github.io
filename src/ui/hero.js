@@ -1,4 +1,5 @@
 import { profile } from "../data/profile.js";
+import { qaProjects } from "../data/qaProjects.js";
 import { CONFIG } from "../config.js";
 import { clearElement, createElement, localize } from "../utils/dom.js";
 
@@ -10,14 +11,34 @@ export function renderHero(language) {
   const availability = createElement("p", { className: "availability-status" }, [statusDot, createElement("span", { text: localize(profile.availability, language) })]);
   const label = createElement("p", { className: "label", text: profile.label });
   const heading = createElement("h1", {}, [document.createTextNode(`${localize(profile.greeting, language)} `), createElement("span", { text: profile.name }), document.createTextNode(".")]);
-  const title = createElement("h2", { text: profile.title });
+  const title = createElement("h2", { text: localize(profile.title, language) });
   const description = createElement("p", { className: "description", text: localize(profile.description, language) });
+  const reach = createElement("p", { className: "hero-reach", attrs: { id: "heroReach", hidden: "" } });
   const buttons = createElement("div", { className: "buttons" }, profile.actions.map((action) => createElement("a", { className: action.className, text: localize(action.label, language), attrs: { href: action.href } })));
   const discord = createElement("button", { className: "social-link copy-discord", attrs: { type: "button" } }, [createBrandIcon("discord"), createElement("span", { text: `Discord: ${CONFIG.discordUsername}` })]);
   const github = createElement("a", { attrs: { href: "https://github.com/scyfchik", target: "_blank", rel: "noopener noreferrer" } }, [createBrandIcon("github"), createElement("span", { text: "GitHub: scyfchik" })]);
   const socials = createElement("div", { className: "socials" }, [discord, github]);
   clearElement(content);
-  content.append(availability, label, heading, title, description, buttons, socials);
+  content.append(availability, label, heading, title, description, reach, buttons, socials);
+}
+
+// Rounded down so the "+" stays true while visits keep growing between deploys.
+function formatVisitsFloor(visits, language) {
+  const billions = Math.floor(visits / 1e8) / 10;
+  const value = billions >= 1 ? billions * 1e9 : Math.floor(visits / 1e6) * 1e6;
+  return new Intl.NumberFormat(language === "en" ? "en-US" : "ru-RU", { notation: "compact", maximumFractionDigits: 1 }).format(value);
+}
+
+export function updateHeroReach(stats, language) {
+  const reach = document.getElementById("heroReach");
+  if (!reach) return;
+  const visits = qaProjects.reduce((sum, project) => sum + (Number(stats?.games?.[project.placeId]?.visits) || 0), 0);
+  reach.hidden = visits === 0;
+  if (!visits) return;
+  const count = qaProjects.length;
+  const projectsWord = language === "en" ? "projects" : { one: "проект", few: "проекта", many: "проектов" }[new Intl.PluralRules("ru-RU").select(count)] ?? "проекта";
+  const visitsWord = language === "en" ? "visits" : "визитов";
+  reach.textContent = `${count} ${projectsWord} · ${formatVisitsFloor(visits, language)}+ ${visitsWord}`;
 }
 
 function createBrandIcon(brand) {
