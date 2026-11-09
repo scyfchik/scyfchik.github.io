@@ -216,11 +216,60 @@
 }
 
 .hero-reach {
-    margin: -18px 0 32px;
-    font-size: 15px;
-    letter-spacing: 0.04em;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    width: fit-content;
+    margin: -14px 0 32px;
+    padding: 13px 18px 14px;
+    border: 1px solid rgba(175, 200, 255, 0.3);
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(20, 43, 91, 0.84), rgba(9, 24, 55, 0.78));
+    box-shadow: 0 14px 42px rgba(3, 8, 20, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+}
+
+.hero-reach[hidden] {
+    display: none;
+}
+
+.hero-reach-label {
+    color: var(--soft);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.hero-reach-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hero-reach-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+}
+
+.hero-reach-stat strong {
     color: var(--text);
-    opacity: 0.85;
+    font-size: 26px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-shadow: 0 0 24px rgba(175, 200, 255, 0.38);
+}
+
+.hero-reach-stat small {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.hero-reach-divider {
+    width: 1px;
+    height: 25px;
+    background: rgba(175, 200, 255, 0.24);
 }
 
 .buttons {

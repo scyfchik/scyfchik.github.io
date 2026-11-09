@@ -103,6 +103,10 @@
     .roblox-stats { gap: 8px; }
     .roblox-stats .stat-value { font-size: 16px; }
     .roblox-stats .stat-label { font-size: 9px; }
+    .hero-reach { width: 100%; }
+    .hero-reach-stats { justify-content: space-between; gap: 10px; }
+    .hero-reach-stat { flex-direction: column; gap: 4px; }
+    .hero-reach-stat strong { font-size: 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
