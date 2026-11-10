@@ -9,8 +9,8 @@ export const communityProjects = Object.freeze([
     kind: "ROBLOX COMMUNITY",
     role: "Community Affairs",
     description: {
-      ru: "Работа с сообществом Asylum Life и поддержка порядка вокруг игрового проекта. Помогаю с коммуникацией, обратной связью игроков и аккуратным сопровождением community-процессов.",
-      en: "Community work for Asylum Life, supporting healthy communication around the game project. I help with player feedback, communication, and organized community-facing processes.",
+      ru: "Работаю с обращениями игроков, собираю обратную связь и помогаю поддерживать порядок в сообществе Asylum Life.",
+      en: "I handle player reports, collect feedback and help moderate the Asylum Life community.",
     },
     category: "Community & Moderation",
     status: { ru: "Roblox-проект", en: "Roblox project" },
@@ -25,8 +25,8 @@ export const communityProjects = Object.freeze([
     kind: "ROBLOX MODERATION",
     role: "Moderator",
     description: {
-      ru: "Модерация сообщества Hypershot и помощь в поддержании безопасной, понятной среды для игроков. Следил за порядком в коммуникации и помогал команде с community-related задачами.",
-      en: "Moderation work for the Hypershot community, helping maintain a safer and clearer environment for players. I supported communication order and helped the team with community-related tasks.",
+      ru: "Модерировал сообщество Hypershot, разбирал обращения игроков и следил за соблюдением правил.",
+      en: "I moderated the Hypershot community, handled player reports and enforced community rules.",
     },
     category: "Community & Moderation",
     status: { ru: "Roblox-проект", en: "Roblox project" },

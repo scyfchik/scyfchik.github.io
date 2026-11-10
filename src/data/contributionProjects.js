@@ -10,8 +10,8 @@ export const contributionProjects = Object.freeze([
     platform: "Roblox",
     experienceCategory: "Avatar Experience",
     description: {
-      ru: "Вношу вклад через тестирование, обратную связь и анализ Roblox-проекта с миллиардами посещений. Это независимый вклад, а не официальная роль в команде.",
-      en: "Contribution through testing, feedback and analysis for a Roblox experience with billions of visits. An independent contribution, not an official staff role.",
+      ru: "Тестировал проект, анализировал проблемы и передавал обратную связь. Это независимый вклад вне официальной команды.",
+      en: "I tested the project, analyzed issues and shared feedback. This was an independent contribution outside the official team.",
     },
     category: { ru: "Тестирование · Обратная связь · Анализ", en: "Testing · Feedback · Analysis" },
     status: { ru: "Открыть проект", en: "Explore experience" },

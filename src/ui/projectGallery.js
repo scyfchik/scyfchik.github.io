@@ -12,21 +12,20 @@ export function createDevelopmentProject(language) {
     el("p", { className: "featured-intro", text: localize(project.description, language) }),
     el("div", { className: "testing-types" }, ["Roblox Studio", "Luau", t("Мультиплеер", "Multiplayer"), t("Хоррор", "Horror")].map(text => el("span", { text }))),
     el("h3", { text: t("Концепция игры", "Game Concept") }),
-    el("div", { className: "game-concepts" }, project.concepts.map(item => el("article", {}, [el("h4", { text: localize(item.title, language) }), el("p", { text: localize(item.text, language) })]))),
+    el("div", { className: "game-concepts" }, project.concepts.map(item => el("p", {}, [el("strong", { text: localize(item.title, language) }), document.createTextNode(`: ${localize(item.text, language)}`)]))),
     el("h3", { text: t("Разработка", "Development Information") }),
     el("dl", { className: "development-facts" }, [
       [t("Студия", "Studio"), project.studio], [t("Платформа", "Platform"), "Roblox"],
-      [t("Инструменты", "Tools"), "Roblox Studio / Luau"], [t("Формат", "Format"), t("Командная разработка", "Team Development")],
-      [t("Статус", "Status"), t("Активная разработка", "Active Development")],
+      [t("Роль", "Role"), localize(project.role, language)], [t("Статус", "Status"), localize(project.status, language)],
     ].map(([label, value]) => el("div", {}, [el("dt", { text: label }), el("dd", { text: value })]))),
-    el("p", { text: localize(project.role, language) }), el("p", { className: "development-note", text: localize(project.note, language) }),
     el("h3", { text: t("Скриншоты", "Screenshot Gallery") }),
   );
-  const gallery = el("div", { className: "project-gallery", attrs: { role: "region", "aria-label": t("Скриншоты The Last Shift", "The Last Shift screenshots"), tabindex: "0" } });
+  const hasImages = project.screenshots.some((slot) => slot.file);
+  const gallery = el("div", { className: `project-gallery${hasImages ? "" : " is-empty"}`, attrs: { role: "region", "aria-label": t("Скриншоты The Last Shift", "The Last Shift screenshots"), tabindex: "0" } });
   const stage = el("button", { className: "gallery-stage", attrs: { type: "button" } });
-  const caption = el("p", { attrs: { "aria-live": "polite", "aria-atomic": "true" } });
-  const previous = el("button", { text: t("← Назад", "← Previous"), attrs: { type: "button" } });
-  const next = el("button", { text: t("Далее →", "Next →"), attrs: { type: "button" } });
+  const caption = el("p", { className: "gallery-caption", attrs: { "aria-live": "polite", "aria-atomic": "true" } });
+  const previous = el("button", { text: "←", attrs: { type: "button", "aria-label": t("Предыдущий скриншот", "Previous screenshot") } });
+  const next = el("button", { text: "→", attrs: { type: "button", "aria-label": t("Следующий скриншот", "Next screenshot") } });
   const indicators = el("div", { className: "gallery-indicators" });
   const dialog = el("dialog", { className: "gallery-lightbox", attrs: { "aria-label": t("Просмотр скриншота", "Screenshot viewer") } });
   const close = el("button", { text: t("Закрыть", "Close"), attrs: { type: "button", autofocus: "" } });
@@ -38,7 +37,11 @@ export function createDevelopmentProject(language) {
   let revision = 0;
   let currentImage = null;
   const buttons = project.screenshots.map((slot, i) => {
-    const button = el("button", { text: localize(slot.title, language), attrs: { type: "button" } });
+    const label = localize(slot.title, language);
+    const preview = slot.file
+      ? el("img", { attrs: { src: `assets/projects/the-last-shift/${slot.file}`, alt: "", loading: "lazy" } })
+      : el("span", { className: "gallery-preview-placeholder", text: String(i + 1), attrs: { "aria-hidden": "true" } });
+    const button = el("button", { attrs: { type: "button", "aria-label": label } }, [preview, el("span", { text: label })]);
     button.addEventListener("click", () => show(i));
     indicators.append(button);
     return button;
@@ -50,7 +53,7 @@ export function createDevelopmentProject(language) {
     const title = localize(slot.title, language);
     currentImage = null;
     stage.disabled = true;
-    stage.replaceChildren(el("strong", { text: title }), el("span", { text: t("Слот для будущего скриншота", "Screenshot placeholder") }));
+    stage.replaceChildren(el("strong", { text: title }), el("span", { text: t("Скриншот пока не добавлен", "Screenshot not added yet") }));
     stage.setAttribute("aria-label", t("Открыть: ", "Open: ") + title);
     caption.textContent = `${index + 1} / ${project.screenshots.length} · ${title}`;
     buttons.forEach((button, i) => button.setAttribute("aria-pressed", String(i === index)));
@@ -88,7 +91,9 @@ export function createDevelopmentProject(language) {
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(end.clientY - start.clientY)) show(index + (dx < 0 ? 1 : -1));
     start = null;
   }, { passive: true });
-  gallery.append(stage, caption, el("div", { className: "gallery-controls" }, [previous, next]), indicators);
+  if (hasImages) gallery.append(stage, el("div", { className: "gallery-controls" }, [previous, caption, next]));
+  else gallery.append(el("p", { className: "gallery-empty-copy", text: t("Скриншоты будут добавлены позже.", "Screenshots will be added later.") }));
+  gallery.append(indicators);
   card.append(gallery, dialog);
   show(0);
   return card;
