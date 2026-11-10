@@ -1,4 +1,5 @@
 import { clearElement, createElement, localize } from "../utils/dom.js";
+import { ownStudio } from "../data/ownStudio.js";
 
 const FEATURED_GAME_LIMIT = 3;
 let currentStudios = null;
@@ -86,6 +87,15 @@ export function renderStudios(studios, language) {
 
   clearElement(root);
   const text = labels(language);
+  root.append(createElement("article", { className: "card studios-card own-studio" }, [
+    createElement("p", { className: "project-role", text: language === "en" ? "My Studio" : "Моя студия" }),
+    createElement("h3", { text: ownStudio.name }),
+    createElement("p", { text: language === "en" ? "Roblox Game Development Studio" : "Студия разработки Roblox-игр" }),
+    createElement("p", { className: "studio-role", text: localize(ownStudio.role, language) }),
+    createElement("p", { className: "studio-contribution", text: localize(ownStudio.description, language) }),
+    createElement("p", { text: language === "en" ? "Main project: The Last Shift" : "Основной проект: The Last Shift" }),
+    createElement("a", { className: "studio-group-link", text: text.group, attrs: { href: ownStudio.url, target: "_blank", rel: "noopener noreferrer" } }),
+  ]));
   for (const studio of Object.values(studios || {})) root.append(renderStudioCard(studio, language, text));
   if (!root.children.length) root.append(createElement("p", { className: "stats-updated stats-unavailable", text: text.unavailable }));
 }

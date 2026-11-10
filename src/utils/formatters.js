@@ -25,7 +25,7 @@ export function animateNumber(element, targetValue, language, duration = 600) {
   }
   const startedAt = performance.now();
   const step = (now) => {
-    const progress = Math.min((now - startedAt) / duration, 1);
+    const progress = Math.max(0, Math.min((now - startedAt) / duration, 1));
     element.textContent = formatNumber(Math.floor(target * progress), language);
     if (progress < 1 && element.isConnected) requestAnimationFrame(step);
   };

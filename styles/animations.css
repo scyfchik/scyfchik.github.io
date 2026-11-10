@@ -1,8 +1,8 @@
 /* ANIMATIONS */
 
 .reveal {
-    opacity: 0;
-    transform: translateY(42px);
+    opacity: 1;
+    transform: none;
     transition: opacity 0.9s ease, transform 0.9s ease;
 }
 

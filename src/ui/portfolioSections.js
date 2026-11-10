@@ -1,4 +1,5 @@
 import { profile } from "../data/profile.js";
+import { createDevelopmentProject } from "./projectGallery.js";
 import { skillGroups } from "../data/skills.js";
 import { qaProjects } from "../data/qaProjects.js";
 import { contributionProjects } from "../data/contributionProjects.js";
@@ -59,12 +60,12 @@ function renderAbout(language) {
   }
 }
 
-function renderSkills() {
+function renderSkills(language) {
   const root = document.getElementById("skillsGroups");
   if (!root) return;
   clearElement(root);
   for (const group of skillGroups) {
-    const tags = createElement("div", { className: "tags" }, group.tags.map((tag) => createElement("span", { text: tag })));
+    const tags = createElement("div", { className: "tags" }, group.tags.map((tag) => createElement("span", { text: localize(tag, language) })));
     root.append(createElement("article", { className: "skill-group" }, [createElement("h3", { text: group.title }), tags]));
   }
 }
@@ -166,13 +167,13 @@ function renderQA(language, stats) {
   const root = document.getElementById("qaGrid");
   if (!root) return;
   const projects = getSortedQAProjects(stats);
-  const isFeatured = (project) => getProjectVisits(project, stats) >= FEATURED_MIN_VISITS;
+  const isFeatured = (project) => project.featured || getProjectVisits(project, stats) >= FEATURED_MIN_VISITS;
   const featured = projects.filter(isFeatured);
   const rest = projects.filter((project) => !isFeatured(project));
 
   clearElement(root);
   if (featured.length) {
-    const cards = featured.map((project) => createFeaturedCard(project, stats.games[project.placeId], language));
+    const cards = featured.map((project) => createFeaturedCard(project, stats?.games?.[project.placeId] ?? { status: "unavailable", playing: 0, visits: 0 }, language));
     // Rows of three; an incomplete last row is stretched so the grid has no gaps (5 cards → 3 + 2).
     const remainder = cards.length % 3;
     if (remainder) cards.slice(-remainder).forEach((card) => card.classList.add(remainder === 1 ? "qa-span-full" : "qa-span-half"));
@@ -238,19 +239,22 @@ function renderExperience(language) {
         createElement("span", { className: "experience-stack", text: project.stack }),
       ]))
       : createElement("ul", {}, experience.items.map((item) => createElement("li", { text: localize(item, language) })));
-    root.append(createElement("div", { className: "experience-card" }, [
+    const card = createElement("div", { className: "experience-card" }, [
       createElement("h3", { text: localize(experience.title, language) }),
       createElement("p", { text: localize(experience.description, language) }),
       details,
-    ]));
+    ]);
+    root.append(card);
   }
 }
 
 // QA is left out on purpose: its layout depends on visit counts, so it is rendered from
 // updateQAStats once stats are known. Until then the static copy in index.html is shown.
 export function renderPortfolioSections(language) {
+  const featured = document.getElementById("featuredProject");
+  if (featured) featured.replaceChildren(createDevelopmentProject(language));
   renderAbout(language);
-  renderSkills();
+  renderSkills(language);
   renderCommunity(language);
   renderCommunity(language, contributionProjects, "contributionGrid");
   renderExperience(language);

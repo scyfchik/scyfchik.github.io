@@ -1,17 +1,18 @@
 export function initializeAnimations() {
   const revealElements = document.querySelectorAll(".reveal");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reducedMotion) {
+  if (reducedMotion || !("IntersectionObserver" in window)) {
     revealElements.forEach((element) => element.classList.add("visible"));
   } else {
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
+          if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) entry.target.animate([{ opacity: 0.5, transform: "translateY(16px)" }, { opacity: 1, transform: "none" }], { duration: 550, easing: "ease-out" });
           revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0 });
     revealElements.forEach((element) => revealObserver.observe(element));
   }
 
