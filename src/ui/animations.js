@@ -112,6 +112,23 @@ function initializeAtmosphere(motion) {
   updateProgress();
 
   const pointer = matchMedia("(hover: hover) and (pointer: fine)");
+  const cursor = createParticle("div", "cursor-dot");
+  cursor.setAttribute("aria-hidden", "true");
+  document.body.append(cursor);
+  const hideCursor = () => document.documentElement.classList.remove("dot-cursor");
+  document.addEventListener("pointermove", event => {
+    if (!pointer.matches || event.pointerType !== "mouse" || event.target.closest("input, textarea, [contenteditable], dialog")) {
+      hideCursor();
+      return;
+    }
+    cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+    cursor.classList.toggle("over-control", Boolean(event.target.closest("a, button, summary")));
+    document.documentElement.classList.add("dot-cursor");
+  }, { passive: true });
+  document.documentElement.addEventListener("pointerleave", hideCursor);
+  window.addEventListener("blur", hideCursor);
+  pointer.addEventListener("change", hideCursor);
+  document.addEventListener("keydown", event => { if (event.key === "Tab") hideCursor(); });
   let highlighted;
   let pointerFrame;
   document.addEventListener("pointermove", event => {

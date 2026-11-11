@@ -41,7 +41,7 @@
   height: auto;
   border-radius: inherit;
   pointer-events: none;
-  background: radial-gradient(240px circle at var(--light-x, 50%) var(--light-y, 0%), rgba(139, 177, 255, .11), transparent 72%);
+  background: radial-gradient(280px circle at var(--light-x, 50%) var(--light-y, 0%), rgba(139, 177, 255, .25), transparent 72%);
   opacity: 0;
   transform: none;
   transition: opacity .4s ease;
@@ -64,7 +64,17 @@
 .personal-contribution p { margin: 5px 0 0; font-size: 14px; }
 .copy-discord.copy-confirmed { border-color: #9bcbbd; box-shadow: 0 0 18px rgba(155, 203, 189, .14); }
 .toast { pointer-events: none; max-width: calc(100vw - 32px); }
+.cursor-dot { position: fixed; top: 0; left: 0; width: 0; height: 0; pointer-events: none; z-index: 100000; display: none; }
+.cursor-dot::before { content: ""; position: absolute; width: 7px; height: 7px; left: -3.5px; top: -3.5px; border-radius: 50%; background: #e4eeff; box-shadow: 0 0 0 1px #526990, 0 0 13px rgba(139, 177, 255, .7); transition: transform .18s ease; }
+.cursor-dot.over-control::before { transform: scale(1.5); }
+.featured-project-section .development-project { border-radius: 12px; background: rgba(11, 25, 50, .94); padding: clamp(20px, 3vw, 30px); }
+.featured-project-section .development-project:hover { box-shadow: none; border-color: var(--border-strong); }
+.featured-project-section .game-concepts { background: none; border: 0; border-top: 1px solid var(--border); border-radius: 0; padding: 14px 0; }
+.featured-project-section .personal-contribution { background: none; border-radius: 0; padding: 4px 0 4px 14px; }
+.featured-project-section .development-facts > div { background: none; border: 0; padding: 4px 0; }
 @media (hover: hover) and (pointer: fine) {
+  html.dot-cursor, html.dot-cursor * { cursor: none !important; }
+  .dot-cursor .cursor-dot { display: block; }
   .pointer-lit::after, .pointer-lit:hover::after { opacity: 1; }
   .card:hover, .experience-card:hover, .skill-group:hover, .contact-card:hover { transform: translateY(-3px); box-shadow: 0 18px 48px rgba(0, 0, 0, .35), 0 0 22px rgba(122, 156, 255, .1); }
   .qa-card:hover .project-heading > span { transform: translate(2px, -2px); }
