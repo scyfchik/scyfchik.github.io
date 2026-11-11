@@ -10,6 +10,13 @@ export function createDevelopmentProject(language) {
     el("p", { className: "project-role", text: localize(project.genre, language) }),
     el("p", { className: "featured-status", text: `${localize(project.status, language)} · ${project.studio}` }),
     el("p", { className: "featured-intro", text: localize(project.description, language) }),
+    el("div", { className: "personal-contribution" }, [
+      el("strong", { text: t("Мой вклад", "My contribution") }),
+      el("p", { text: t(
+        "Я программист и главный разработчик The Last Shift, владелец игры и Shwarma Studios. Разрабатываю игру вместе с командой.",
+        "I'm the programmer and lead developer of The Last Shift, and the owner of the game and Shwarma Studios. I build the game with the team.",
+      ) }),
+    ]),
     el("div", { className: "testing-types" }, ["Roblox Studio", "Luau", t("Мультиплеер", "Multiplayer"), t("Хоррор", "Horror")].map(text => el("span", { text }))),
     el("h3", { text: t("Концепция игры", "Game Concept") }),
     el("div", { className: "game-concepts" }, project.concepts.map(item => el("p", {}, [el("strong", { text: localize(item.title, language) }), document.createTextNode(`: ${localize(item.text, language)}`)]))),

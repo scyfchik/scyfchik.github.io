@@ -14,13 +14,15 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2200);
 }
 
-async function copyDiscord() {
+async function copyDiscord(button) {
   const language = document.documentElement.lang === "en" ? "en" : "ru";
   try {
     await copyText(CONFIG.discordUsername);
-    showToast(language === "en" ? "Discord username copied" : "Discord username скопирован");
+    showToast(language === "en" ? "Discord username copied" : "Имя пользователя Discord скопировано");
+    button.classList.add("copy-confirmed");
+    window.setTimeout(() => button.classList.remove("copy-confirmed"), 2200);
   } catch (_) {
-    showToast(language === "en" ? "Could not copy username" : "Не удалось скопировать username");
+    showToast(language === "en" ? "Could not copy username" : "Не удалось скопировать имя пользователя");
   }
 }
 
@@ -41,7 +43,8 @@ export function renderContacts(language) {
 
 export function initializeContact() {
   document.addEventListener("click", (event) => {
-    if (event.target.closest(".copy-discord")) copyDiscord();
+    const button = event.target.closest(".copy-discord");
+    if (button) copyDiscord(button);
   });
   const year = document.getElementById("currentYear");
   if (year) year.textContent = String(new Date().getFullYear());

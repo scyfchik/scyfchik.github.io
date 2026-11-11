@@ -8,7 +8,7 @@ import { initializeLanguage } from "./ui/language.js";
 import { initializeNavigation } from "./ui/navigation.js";
 import { renderStudios, updateStudiosLanguage, showStudiosUnavailable } from "./ui/studios.js";
 import { renderContacts, initializeContact } from "./ui/contact.js";
-import { initializeAnimations } from "./ui/animations.js";
+import { initializeAnimations, refreshAnimations } from "./ui/animations.js";
 
 function renderStaticContent(language) {
   renderHero(language);
@@ -22,6 +22,7 @@ function rerenderLocalizedContent(language) {
   updateHeroReach(state.robloxStats, language);
   updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
   updateStudiosLanguage(language);
+  refreshAnimations();
 }
 
 async function loadData() {
@@ -38,6 +39,7 @@ async function loadData() {
   updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
   renderStudios(state.studios, language);
   if (state.errors.studios) showStudiosUnavailable(language);
+  refreshAnimations();
 }
 
 async function bootstrap() {

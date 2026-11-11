@@ -9,7 +9,7 @@ export const developmentProject = {
     { title: { ru: "Асимметричный хоррор", en: "Asymmetric Horror" }, text: { ru: "Выжившие противостоят убийцам в меняющихся условиях раунда.", en: "Survivors face killers under changing round conditions." } },
     { title: { ru: "Команда", en: "Team" }, text: { ru: "Проект включает игровые системы, карты, UI, VFX и звук.", en: "The project covers gameplay systems, maps, UI, VFX and sound." } },
   ],
-  role: { ru: "Команда разработки", en: "Development Team" },
+  role: { ru: "Главный разработчик", en: "Lead Developer" },
   status: { ru: "В разработке", en: "In development" },
   screenshots: [
     { title: { ru: "Главное меню", en: "Main Menu" }, file: null },

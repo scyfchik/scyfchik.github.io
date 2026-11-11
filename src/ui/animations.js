@@ -1,3 +1,9 @@
+let observeContent = () => {};
+
+export function refreshAnimations() {
+  observeContent();
+}
+
 export function initializeAnimations() {
   const revealElements = document.querySelectorAll(".reveal, #featuredProject");
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -26,20 +32,38 @@ export function initializeAnimations() {
   if (reducedMotion || !("IntersectionObserver" in window)) {
     revealElements.forEach((element) => element.classList.add("visible"));
   } else {
+    const seen = new Set();
+    const keys = new WeakMap();
     const revealObserver = new IntersectionObserver((entries) => {
+      let order = 0;
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
-          if (entry.target.id !== "heroContent") {
-            const items = [...entry.target.children];
-            items.forEach((item, index) => appear(item, Math.min(index * 45, 135)));
+          const key = keys.get(entry.target);
+          if (!seen.has(key)) {
+            seen.add(key);
+            appear(entry.target, Math.min(order++ * 55, 165));
           }
           revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0 });
-    revealElements.forEach((element) => revealObserver.observe(element));
+    }, { threshold: 0.06 });
+    observeContent = () => {
+      // Renders replace cards after language and statistics updates. Stable keys keep reveals one-shot.
+      revealObserver.disconnect();
+      document.querySelectorAll("main .section").forEach(section => {
+        const items = section.querySelectorAll(":scope > h2, .card, .skill-group, .experience-card, .contact-card, .development-project, .about-text, .qa-process");
+        items.forEach((item, index) => {
+          const key = `${section.id}:${item.dataset.placeId || index}`;
+          keys.set(item, key);
+          if (!seen.has(key)) revealObserver.observe(item);
+        });
+      });
+    };
+    observeContent();
   }
+
+  initializeAtmosphere(motion);
 
   const hero = document.querySelector(".hero");
   const isMobile = window.matchMedia("(max-width: 800px)").matches;
@@ -65,6 +89,57 @@ export function initializeAnimations() {
     particle.style.animationDuration = `${5 + Math.random() * 5}s`;
     hero.append(particle);
   }
+}
+
+function initializeAtmosphere(motion) {
+  const ambient = createParticle("div", "ambient-light");
+  const progress = createParticle("div", "reading-progress");
+  ambient.setAttribute("aria-hidden", "true");
+  progress.setAttribute("aria-hidden", "true");
+  document.body.append(ambient, progress);
+  let progressFrame;
+  const updateProgress = () => {
+    progressFrame = undefined;
+    const distance = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = `scaleX(${distance > 0 ? Math.min(1, Math.max(0, scrollY / distance)) : 0})`;
+  };
+  const scheduleProgress = () => {
+    if (!progressFrame) progressFrame = requestAnimationFrame(updateProgress);
+  };
+  window.addEventListener("scroll", scheduleProgress, { passive: true });
+  window.addEventListener("resize", scheduleProgress);
+  new ResizeObserver(scheduleProgress).observe(document.body);
+  updateProgress();
+
+  const pointer = matchMedia("(hover: hover) and (pointer: fine)");
+  let highlighted;
+  let pointerFrame;
+  document.addEventListener("pointermove", event => {
+    if (!pointer.matches || motion.matches || event.pointerType === "touch") return;
+    const card = event.target.closest(".qa-card, .studios-card, .development-project");
+    if (highlighted !== card) {
+      highlighted?.classList.remove("pointer-lit");
+      highlighted = card;
+    }
+    cancelAnimationFrame(pointerFrame);
+    if (!card) return;
+    const { clientX, clientY } = event;
+    pointerFrame = requestAnimationFrame(() => {
+      const bounds = card.getBoundingClientRect();
+      card.style.setProperty("--light-x", `${clientX - bounds.left}px`);
+      card.style.setProperty("--light-y", `${clientY - bounds.top}px`);
+      card.classList.add("pointer-lit");
+    });
+  }, { passive: true });
+  const clearHighlight = () => {
+    cancelAnimationFrame(pointerFrame);
+    highlighted?.classList.remove("pointer-lit");
+    highlighted = null;
+  };
+  document.documentElement.addEventListener("pointerleave", clearHighlight);
+  window.addEventListener("scroll", clearHighlight, { passive: true });
+  motion.addEventListener("change", clearHighlight);
+  pointer.addEventListener("change", clearHighlight);
 }
 
 function createParticle(tag, className) {

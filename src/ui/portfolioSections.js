@@ -251,6 +251,14 @@ function renderExperience(language) {
 // QA is left out on purpose: its layout depends on visit counts, so it is rendered from
 // updateQAStats once stats are known. Until then the static copy in index.html is shown.
 export function renderPortfolioSections(language) {
+  document.querySelector(".qa-process")?.remove();
+  const steps = language === "en"
+    ? ["Reproduce the issue", "Document the steps", "Verify the fix", "Check for regressions"]
+    : ["Воспроизвожу проблему", "Описываю шаги", "Проверяю исправление", "Проверяю регрессии"];
+  document.getElementById("qaGrid")?.before(createElement("div", { className: "qa-process" }, [
+    createElement("h3", { text: language === "en" ? "How I test" : "Как я тестирую" }),
+    createElement("ol", {}, steps.map(text => createElement("li", { text }))),
+  ]));
   const featured = document.getElementById("featuredProject");
   if (featured) featured.replaceChildren(createDevelopmentProject(language));
   renderAbout(language);
