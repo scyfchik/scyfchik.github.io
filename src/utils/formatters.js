@@ -1,10 +1,16 @@
+const numberFormats = new Map();
+
 export function formatNumber(value, language = "ru") {
   const number = Number(value);
   if (!Number.isFinite(number)) return "—";
-  return new Intl.NumberFormat(language === "en" ? "en-US" : "ru-RU", {
-    notation: number >= 10_000 ? "compact" : "standard",
+  const locale = language === "en" ? "en-US" : "ru-RU";
+  const notation = number >= 10_000 ? "compact" : "standard";
+  const key = `${locale}:${notation}`;
+  if (!numberFormats.has(key)) numberFormats.set(key, new Intl.NumberFormat(locale, {
+    notation,
     maximumFractionDigits: 1,
-  }).format(number);
+  }));
+  return numberFormats.get(key).format(number);
 }
 
 export function formatDate(value, language, options) {
@@ -13,21 +19,9 @@ export function formatDate(value, language, options) {
   return date.toLocaleString(language === "en" ? "en-US" : "ru-RU", options);
 }
 
-export function animateNumber(element, targetValue, language, duration = 600) {
-  const target = Number(targetValue);
-  if (!element || !Number.isFinite(target)) {
-    if (element) element.textContent = "—";
-    return;
-  }
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    element.textContent = formatNumber(target, language);
-    return;
-  }
-  const startedAt = performance.now();
-  const step = (now) => {
-    const progress = Math.max(0, Math.min((now - startedAt) / duration, 1));
-    element.textContent = formatNumber(Math.floor(target * progress), language);
-    if (progress < 1 && element.isConnected) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
+// Keep statistics stable while cards reveal; counting every value adds avoidable DOM writes.
+export function animateNumber(element, targetValue, language) {
+  if (!element) return;
+  const text = formatNumber(targetValue, language);
+  if (element.textContent !== text) element.textContent = text;
 }

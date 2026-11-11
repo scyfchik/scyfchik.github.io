@@ -25,7 +25,7 @@ function labels(language) {
 function gameThumbnail(game) {
   const fallback = createElement("div", { className: "studio-game-thumb studio-game-thumb-fallback", text: game.name.slice(0, 1).toUpperCase(), attrs: { "aria-hidden": "true" } });
   if (!game.image) return fallback;
-  const image = createElement("img", { className: "studio-game-thumb", attrs: { src: game.image, alt: "", loading: "lazy" } });
+  const image = createElement("img", { className: "studio-game-thumb", attrs: { src: game.image, alt: "", loading: "lazy", decoding: "async", width: "48", height: "48" } });
   image.addEventListener("error", () => image.replaceWith(fallback), { once: true });
   return image;
 }
@@ -52,10 +52,13 @@ function gamesSection(studio, text) {
   const remaining = studio.games.slice(FEATURED_GAME_LIMIT);
   if (remaining.length) {
     const summary = createElement("summary", { text: text.showMore(remaining.length) });
-    const details = createElement("details", { className: "studio-games-more" }, [
-      summary,
-      createElement("div", { className: "studio-games-list" }, remaining.map((game) => gameItem(game, text))),
-    ]);
+    const details = createElement("details", { className: "studio-games-more" }, [summary]);
+    let populated = false;
+    details.addEventListener("toggle", () => {
+      if (!details.open || populated) return;
+      populated = true;
+      details.append(createElement("div", { className: "studio-games-list" }, remaining.map((game) => gameItem(game, text))));
+    });
     summary.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
       event.preventDefault();

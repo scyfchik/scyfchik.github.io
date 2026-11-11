@@ -19,7 +19,6 @@
         url("../hero-bg-harmonized.webp") center / cover no-repeat;
     transform: translate3d(0, var(--hero-parallax-y), 0) scale(1.035);
     transform-origin: center top;
-    will-change: transform;
     -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 44%, rgba(0, 0, 0, 0.94) 54%, rgba(0, 0, 0, 0.7) 68%, rgba(0, 0, 0, 0.34) 80%, transparent 91%, transparent 100%);
     mask-image: linear-gradient(180deg, #000 0%, #000 44%, rgba(0, 0, 0, 0.94) 54%, rgba(0, 0, 0, 0.7) 68%, rgba(0, 0, 0, 0.34) 80%, transparent 91%, transparent 100%);
 }

@@ -22,12 +22,14 @@ function normalizeGame(game) {
 }
 
 export async function fetchStudios() {
-  const config = await fetchJson(CONFIG.paths.studios, "studios.json");
+  const [config, generated] = await Promise.all([
+    fetchJson(CONFIG.paths.studios, "studios.json"),
+    fetchJson(CONFIG.paths.studioStats, "studio-stats.json").catch(() => null),
+  ]);
   if (!Array.isArray(config.studios)) throw new Error("studios.json: expected studios array");
 
   // studios.json is hand-written and always present; studio-stats.json is generated and may lag
   // behind it, so studio cards still render (without games) when the generated file is missing.
-  const generated = await fetchJson(CONFIG.paths.studioStats, "studio-stats.json").catch(() => null);
   const generatedStudios = generated?.studios ?? {};
 
   return Object.fromEntries(config.studios.map((studio) => {

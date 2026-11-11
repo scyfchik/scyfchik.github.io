@@ -67,18 +67,6 @@ export function initializeAnimations() {
 
   const hero = document.querySelector(".hero");
   const isMobile = window.matchMedia("(max-width: 800px)").matches;
-  if (hero && !isMobile && !reducedMotion) {
-    let parallaxFrame;
-    const updateParallax = () => {
-      parallaxFrame = undefined;
-      const heroShift = motion.matches ? 0 : Math.max(-18, Math.min(18, window.scrollY * 0.025));
-      hero.style.setProperty("--hero-parallax-y", `${heroShift.toFixed(2)}px`);
-    };
-    window.addEventListener("scroll", () => {
-      if (!parallaxFrame) parallaxFrame = window.requestAnimationFrame(updateParallax);
-    }, { passive: true });
-    updateParallax();
-  }
 
   if (!hero || isMobile || reducedMotion) return;
   for (let index = 0; index < 8; index += 1) {
@@ -89,6 +77,14 @@ export function initializeAnimations() {
     particle.style.animationDuration = `${5 + Math.random() * 5}s`;
     hero.append(particle);
   }
+  let heroVisible = true;
+  const pauseDecor = () => hero.classList.toggle("decor-paused", !heroVisible || document.hidden);
+  new IntersectionObserver(([entry]) => {
+    heroVisible = entry.isIntersecting;
+    pauseDecor();
+  }).observe(hero);
+  document.addEventListener("visibilitychange", pauseDecor);
+
 }
 
 function initializeAtmosphere(motion) {
@@ -115,48 +111,41 @@ function initializeAtmosphere(motion) {
   const cursor = createParticle("div", "cursor-dot");
   cursor.setAttribute("aria-hidden", "true");
   document.body.append(cursor);
-  const hideCursor = () => document.documentElement.classList.remove("dot-cursor");
+  const glow = createParticle("div", "cursor-glow");
+  glow.setAttribute("aria-hidden", "true");
+  document.body.append(glow);
+  let frame;
+  let x = 0;
+  let y = 0;
+  let control = false;
+  const hideCursor = () => {
+    cancelAnimationFrame(frame);
+    frame = undefined;
+    document.documentElement.classList.remove("dot-cursor");
+  };
   document.addEventListener("pointermove", event => {
     if (!pointer.matches || event.pointerType !== "mouse" || event.target.closest("input, textarea, [contenteditable], dialog")) {
       hideCursor();
       return;
     }
-    cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
-    cursor.classList.toggle("over-control", Boolean(event.target.closest("a, button, summary")));
-    document.documentElement.classList.add("dot-cursor");
+    x = event.clientX;
+    y = event.clientY;
+    control = Boolean(event.target.closest("a, button, summary"));
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = undefined;
+      const position = `translate3d(${x}px, ${y}px, 0)`;
+      cursor.style.transform = position;
+      glow.style.transform = position;
+      cursor.classList.toggle("over-control", control);
+      document.documentElement.classList.add("dot-cursor");
+    });
   }, { passive: true });
   document.documentElement.addEventListener("pointerleave", hideCursor);
   window.addEventListener("blur", hideCursor);
   pointer.addEventListener("change", hideCursor);
+  document.addEventListener("visibilitychange", hideCursor);
   document.addEventListener("keydown", event => { if (event.key === "Tab") hideCursor(); });
-  let highlighted;
-  let pointerFrame;
-  document.addEventListener("pointermove", event => {
-    if (!pointer.matches || motion.matches || event.pointerType === "touch") return;
-    const card = event.target.closest(".qa-card, .studios-card, .development-project");
-    if (highlighted !== card) {
-      highlighted?.classList.remove("pointer-lit");
-      highlighted = card;
-    }
-    cancelAnimationFrame(pointerFrame);
-    if (!card) return;
-    const { clientX, clientY } = event;
-    pointerFrame = requestAnimationFrame(() => {
-      const bounds = card.getBoundingClientRect();
-      card.style.setProperty("--light-x", `${clientX - bounds.left}px`);
-      card.style.setProperty("--light-y", `${clientY - bounds.top}px`);
-      card.classList.add("pointer-lit");
-    });
-  }, { passive: true });
-  const clearHighlight = () => {
-    cancelAnimationFrame(pointerFrame);
-    highlighted?.classList.remove("pointer-lit");
-    highlighted = null;
-  };
-  document.documentElement.addEventListener("pointerleave", clearHighlight);
-  window.addEventListener("scroll", clearHighlight, { passive: true });
-  motion.addEventListener("change", clearHighlight);
-  pointer.addEventListener("change", clearHighlight);
 }
 
 function createParticle(tag, className) {

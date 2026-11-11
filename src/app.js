@@ -25,21 +25,41 @@ function rerenderLocalizedContent(language) {
   refreshAnimations();
 }
 
+let loading = false;
+let lastLoad = 0;
+let lastStats;
+let lastStudios;
+
 async function loadData() {
-  const state = getState();
-  const [statsResult, studiosResult] = await Promise.allSettled([fetchRobloxStats(), fetchStudios()]);
+  if (loading) return;
+  loading = true;
+  try {
+    const state = getState();
+    const [statsResult, studiosResult] = await Promise.allSettled([fetchRobloxStats(), fetchStudios()]);
 
-  if (statsResult.status === "fulfilled") setResourceState("robloxStats", { data: statsResult.value });
-  else setResourceState("robloxStats", { error: statsResult.reason });
-  if (studiosResult.status === "fulfilled") setResourceState("studios", { data: studiosResult.value });
-  else setResourceState("studios", { error: studiosResult.reason });
+    if (statsResult.status === "fulfilled") setResourceState("robloxStats", { data: statsResult.value });
+    else setResourceState("robloxStats", { error: statsResult.reason });
+    if (studiosResult.status === "fulfilled") setResourceState("studios", { data: studiosResult.value });
+    else setResourceState("studios", { error: studiosResult.reason });
 
-  const language = state.currentLanguage;
-  updateHeroReach(state.robloxStats, language);
-  updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
-  renderStudios(state.studios, language);
-  if (state.errors.studios) showStudiosUnavailable(language);
-  refreshAnimations();
+    const language = state.currentLanguage;
+    const statsKey = JSON.stringify([state.robloxStats, Boolean(state.errors.robloxStats)]);
+    const studiosKey = JSON.stringify([state.studios, Boolean(state.errors.studios)]);
+    if (statsKey !== lastStats) {
+      updateHeroReach(state.robloxStats, language);
+      updateQAStats(state.robloxStats, language, Boolean(state.errors.robloxStats));
+      lastStats = statsKey;
+    }
+    if (studiosKey !== lastStudios) {
+      renderStudios(state.studios, language);
+      if (state.errors.studios) showStudiosUnavailable(language);
+      lastStudios = studiosKey;
+    }
+    refreshAnimations();
+  } finally {
+    loading = false;
+    lastLoad = Date.now();
+  }
 }
 
 async function bootstrap() {
@@ -49,7 +69,10 @@ async function bootstrap() {
   initializeContact();
   initializeAnimations();
   await loadData();
-  window.setInterval(loadData, CONFIG.refreshInterval);
+  window.setInterval(() => { if (!document.hidden) loadData(); }, CONFIG.refreshInterval);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && Date.now() - lastLoad >= CONFIG.refreshInterval) loadData();
+  });
 }
 
 bootstrap().catch((error) => {

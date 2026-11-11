@@ -93,3 +93,20 @@
   .qa-card:hover .project-heading > span, .socials a:hover, .socials button:hover,
   .card:hover, .experience-card:hover, .skill-group:hover, .contact-card:hover { transform: none; }
 }
+.cursor-glow { position: fixed; top: 0; left: 0; width: 0; height: 0; pointer-events: none; z-index: 99; display: none; }
+.cursor-glow::before { content: ""; position: absolute; left: -140px; top: -140px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(139,177,255,.19), rgba(100,150,255,.07) 38%, transparent 70%); }
+/* One composited glow replaces gradients repainted separately inside each card. */
+@media (hover: hover) and (pointer: fine) { .dot-cursor .cursor-glow { display: block; } }
+.card, .experience-card, .contact-card, .about-text { backdrop-filter: none; }
+.btn.primary { animation: none; }
+@media (prefers-reduced-motion: reduce) { .dot-cursor .cursor-glow { display: none; } }
+/* Static hero depth avoids repainting a viewport-sized masked layer on every scroll. */
+.decor-paused .hero-particle { animation-play-state: paused; }
+.stat-value, .qa-compact-meta strong { font-variant-numeric: tabular-nums; }
+@media (max-width: 800px), (pointer: coarse) {
+  .ambient-light, .cursor-glow, .cursor-dot { display: none !important; }
+  .card, .experience-card, .contact-card { box-shadow: 0 8px 24px rgba(0,0,0,.24); }
+  .socials button, .hero-reach, .btn, .availability-status { backdrop-filter: none; }
+  .menu-toggle, .lang-switch button, .gallery-indicators button, .gallery-controls button, .studio-games-more summary { min-height: 44px; }
+  .studio-games-more summary { display: flex; align-items: center; }
+}
