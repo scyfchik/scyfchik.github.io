@@ -65,9 +65,14 @@ export function createDevelopmentProject(language) {
         stage.replaceChildren(image);
         stage.disabled = false;
         currentImage = image;
+        image.classList.add("gallery-enter");
       });
     }
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) stage.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250 });
+    const selectedPreview = buttons[index].firstElementChild;
+    selectedPreview.classList.remove("gallery-enter");
+    requestAnimationFrame(() => {
+      if (request === revision) selectedPreview.classList.add("gallery-enter");
+    });
   }
   stage.addEventListener("click", () => {
     if (!currentImage) return;
